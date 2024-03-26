@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "cga:config/google-auth.json"
+  ],
+  "@graph": [
+    {
+      "comment": [
+        "css:config/oidc.jsonをベースにカスタマイズするためのComponent.js設定ファイル。",
+        "現在はまだテスト。"
+      ]
+    },
+    {
+      "@id": "urn:cga:core:MyOverride1",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:cga:core:GoogleOIDC" },
+      "overrideSteps": [
+        {
+          "@type": "OverrideParameters",
+          "overrideValue": {
+            "@type": "GoogleOIDC",
+            "c_id": "たぶん半角71文字ぐらいの最後が.apps.googleusercontent.comで終る文字列"
+          }
+        },
+        {
+          "@type": "OverrideParameters",
+          "overrideValue": {
+            "@type": "GoogleOIDC",
+            "c_secret": "たぶん半角24文字ぐらいの文字列"
+          }
+        }
+      ]
+    }
+  ]
+}

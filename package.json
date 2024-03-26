@@ -1,0 +1,52 @@
+{
+  "name": "css-google-auth",
+  "version": "1.0.0",
+  "description": "Components for Google authentication in CommunitySolidServer.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth",
+  "lsd:components": "dist/components/components.jsonld",
+  "lsd:contexts": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld": "dist/components/context.jsonld"
+  },
+  "lsd:importPaths": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/dist/": "dist/"
+  },
+  "scripts": {
+    "build": "npm run build:ts && npm run build:components",
+    "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r cga",
+    "build:ts": "tsc",
+    "prepare": "npm run build",
+    "test": "community-solid-server -c @css:config/oidc.json test.json -f data -m .",
+    "clean": "rm -fr node_modules; rm -fr data; rm -fr dist"
+  },
+  "files": [
+    "dist",
+    "config"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksaito-hiu/css-google-auth.git"
+  },
+  "keywords": [
+    "Solid",
+    "Semanticweb",
+    "Authentication",
+    "Google"
+  ],
+  "author": "Kenji Saito <ksaito@do-johodai.ac.jp> (https://github.com/ksaito-hiu)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ksaito-hiu/css-google-auth/issues"
+  },
+  "homepage": "https://github.com/ksaito-hiu/css-google-auth#readme",
+  "devDependencies": {
+    "@solid/community-server": "^7.0.5",
+    "@tsconfig/node18": "^18.2.3",
+    "componentsjs-generator": "^4.0.1",
+    "openid-client": "^5.6.5",
+    "typescript": "^5.4.3"
+  }
+}

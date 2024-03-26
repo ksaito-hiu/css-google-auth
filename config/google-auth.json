@@ -1,0 +1,186 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Enable Google OIDC Authentication.",
+    },
+    {
+      "@id": "urn:cga:core:GoogleOIDC",
+      "@type": "GoogleOIDC",
+      "g_route": { "@id": "urn:solid-server:default:AccountRoute" },
+      "c_id": "this parameter will be overrided by test.json.",
+      "c_secret": "this parameter will be overrided by test.json."
+    },
+    {
+      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        { "@id" : "urn:cga:core:GoogleOIDC" }
+      ]
+    },
+    { "comment": "Route handler(create-googleのためのルートハンドラ)",
+      "@id": "urn:cga:core:AccountGoogleRouter",
+      "@type": "AuthorizedRouteHandler",
+      "route": {
+        "@id": "urn:cga:core:CreateGoogleRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": { "@id": "urn:solid-server:default:AccountIdRoute" },
+        "relativePath": "login/google/"
+      },
+      "source": { "@id": "urn:cga:core:CreateGoogleInteractionHandler" }
+    },
+    { "comment": "Interaction handler(create-googleのためのインタラクションハンドラー)",
+      "@id": "urn:cga:core:CreateGoogleInteractionHandler",
+      "@type": "ViewInteractionHandler",
+      "source": {
+        "@id": "urn:cga:core:CreateGoogleHandler",
+        "@type": "CreateGoogleHandler",
+      }
+    },
+    { "comment": "Exposing the API(APIの公開)",
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        { "@id": "urn:cga:core:AccountGoogleRouter" }
+      ]
+    },
+
+    { "comment": "Route handler(login-googleのためのルートハンドラ)",
+      "@id": "urn:cga:core:LoginGoogleRouter",
+      "@type": "InteractionRouteHandler",
+      "route": {
+        "@id": "urn:cga:core:LoginGoogleRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": { "@id": "urn:solid-server:default:IndexRoute" },
+        "relativePath": "login/google/"
+      },
+      "source": { "@id": "urn:cga:core:LoginGoogleInteractionHandler" }
+    },
+    { "comment": "Interaction handler(login-googleのためのインタラクションハンドラー)",
+      "@id": "urn:cga:core:LoginGoogleInteractionHandler",
+      "@type": "ViewInteractionHandler",
+      "source": {
+        "@id": "urn:cga:core:LoginGoogleHandler",
+        "@type": "LoginGoogleHandler",
+      }
+    },
+    { "comment": "Exposing the API(APIの公開)",
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        { "@id": "urn:cga:core:LoginGoogleRouter" }
+      ]
+    },
+
+    {
+      "comment": [ "UIのためのHTMLテンプレートを登録する",
+                   "routeの設定でAPIと同じ場所に登録している。"]
+    },
+    { "comment": "Adding HTML(create-googleのHTMLをコントロールにの追加)",
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:cga:core:CreateGoogleHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "./templates/identity/google/create-google.html.ejs",
+        "route": { "@id": "urn:cga:core:CreateGoogleRoute" }
+      }]
+    },
+    { "comment": "Adding HTML(login-googleのHTMLをコントロールにの追加)",
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:cga:core:LoginGoogleHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "./templates/identity/google/login-google.html.ejs",
+        "route": { "@id": "urn:cga:core:LoginGoogleRoute" }
+      }]
+    },
+
+    {
+      "comment": [ "ここから下は@css:config/identity/handler/enable/password.json",
+                   "を真似してコントロールを整備する。"]
+    },
+    { "comment": "Adding the necessary controls(googleを入れるコントロールを追加する)",
+      "@id": "urn:solid-server:default:ControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "google",
+          "ControlHandler:_controls_value": {
+            "comment": "All controls associated with the google login method.",
+            "@id": "urn:cga:core:GoogleControlHandler",
+            "@type": "ControlHandler",
+            "controls": []
+          }
+        }
+      ]
+    },
+    { "comment": "Adding the necessary controls(googleコントロールの中にcreateを追加する)",
+      "@id": "urn:cga:core:GoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "create",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:CreateGoogleRoute" }
+      }]
+    },
+    { "comment": "Adding the necessary controls(googleコントロールの中にloginを追加する)",
+      "@id": "urn:cga:core:GoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "login",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:LoginGoogleRoute" }
+      }]
+    },
+    { "comment": "コントロールのloginの所に登録することでlogin画面の最初に選択肢が表示されるようになる。",
+      "@id": "urn:solid-server:default:LoginHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "GoogleOIDC authentication",
+          "ControlHandler:_controls_value": { "@id": "urn:cga:core:LoginGoogleRoute" }
+        }
+      ]
+    },
+    {
+      "comment": [
+        "HTMLのテンプレートのアドレスもコントロールに登録する。",
+        "まずは、コントロールのhtmlの中にgoogleを作る。"
+      ]
+    },
+    {
+      "@id": "urn:solid-server:default:HtmlControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "google",
+          "ControlHandler:_controls_value": {
+            "comment": "All controls associated with the password login method.",
+            "@id": "urn:cga:core:HtmlGoogleControlHandler",
+            "@type": "ControlHandler",
+            "controls": []
+          }
+        }
+      ]
+    },
+    { "comment": "Adding HTML(create-googleのHTMLをコントロールのHTMLの所に追加)",
+      "@id": "urn:cga:core:HtmlGoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "create",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:CreateGoogleRoute" }
+      }]
+    },
+    { "comment": "Adding HTML(login-googleのHTMLをコントロールのHTMLの所に追加)",
+      "@id": "urn:cga:core:HtmlGoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "login",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:LoginGoogleRoute" }
+      }]
+    }
+  ]
+}
