@@ -1,0 +1,65 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Handles the google login interaction.",
+      "@id": "urn:cga:core:LoginGoogleRouter",
+      "@type": "InteractionRouteHandler",
+      "route": {
+        "@id": "urn:cga:core:LoginGoogleRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": { "@id": "urn:solid-server:default:LoginRoute" },
+        "relativePath": "google/"
+      },
+      "source": {
+        "@type": "ViewInteractionHandler",
+        "source": {
+          "@id": "urn:cga:core:GoogleLoginHandler",
+          "@type": "GoogleLoginHandler",
+          "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
+          "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+          "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
+        }
+      }
+    },
+
+    {
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [{ "@id": "urn:cga:core:LoginGoogleRouter" }]
+    },
+
+    {
+      "@id": "urn:cga:core:GoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "login",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:LoginGoogleRoute" }
+      }]
+    },
+
+    {
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:cga:core:GoogleLoginHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "cga:templates/identity/password/login.html.ejs",
+        "route": { "@id": "urn:cga:core:LoginGoogleRoute" }
+      }]
+    },
+    {
+      "ControlHandler:_controls_value": {
+        "@id": "urn:cga:core:GoogleHtmlControlHandler",
+        "@type": "ControlHandler",
+        "controls": [{
+          "ControlHandler:_controls_key": "login",
+          "ControlHandler:_controls_value": { "@id": "urn:cga:core:LoginGoogleRoute" }
+        }]
+      }
+    }
+  ]
+}

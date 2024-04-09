@@ -1,0 +1,22 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:cga:core:GoogleOIDC",
+      "@type": "GoogleOIDC",
+      "g_route": { "@id": "urn:solid-server:default:AccountRoute" },
+      "c_id": "this parameter will be overrided by test.json.",
+      "c_secret": "this parameter will be overrided by test.json."
+    },
+    {
+      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        { "@id" : "urn:cga:core:GoogleOIDC" }
+      ]
+    }
+  ]
+}

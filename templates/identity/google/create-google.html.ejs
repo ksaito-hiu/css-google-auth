@@ -1,4 +1,4 @@
-<h1>Create account</h1>
+<h1>Create account: GOOGLE</h1>
 <form method="post" id="mainForm">
   <p class="error" id="error"></p>
 
@@ -37,7 +37,7 @@
     addPostListener(async(event) => {
       validatePasswordConfirmation('password');
 
-      await postJsonForm(controls.password.create);
+      await postJsonForm(controls.google.create);
       location.href = controls.html.account.account;
     });
   })();

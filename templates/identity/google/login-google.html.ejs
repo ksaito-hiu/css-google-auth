@@ -1,4 +1,4 @@
-<h1>Log in</h1>
+<h1>Log in: GOOGLE</h1>
 <form method="post" id="mainForm">
   <p class="error" id="error"></p>
 
@@ -26,7 +26,6 @@
 
   <ul class="actions">
     <li><a id="register-link" href="" class="link">Sign up</a></li>
-    <li><a id="forgot-link"  href="" class="link">Forgot password</a></li>
   </ul>
 </form>
 
@@ -43,7 +42,7 @@
     });
 
     addPostListener(async() => {
-      const json = await postJsonForm(controls.password.login, false,
+      const json = await postJsonForm(controls.google.login, false,
         (json) => Object.assign(json, { remember: Boolean(json.remember) }));
       // In case there was no forced OIDC redirect, just go to the main account page
       if (json) {
@@ -53,7 +52,6 @@
       }
     });
 
-    updateElement('register-link', controls.html.password.register, { href: true });
-    updateElement('forgot-link', controls.html.password.forgot, { href: true });
+    updateElement('register-link', controls.html.google.register, { href: true });
   })();
 </script>

@@ -4,8 +4,10 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
   ],
   "import": [
-    "cga:config/identity/handler/routing/google/main.json",
-    "cga:config/identity/handler/storage/google.json",
+    "cga:config/identity/handler/routing/google/google-oidc.json",
+    "cga:config/identity/handler/routing/google/create.json",
+    "cga:config/identity/handler/routing/google/login.json",
+    "cga:config/identity/handler/routing/google/resource.json"
   ],
   "@graph": []
 }

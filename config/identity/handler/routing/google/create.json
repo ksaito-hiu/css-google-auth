@@ -1,0 +1,64 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Allows adding the google login method to an account",
+      "@id": "urn:cga:core:AccountGoogleRouter",
+      "@type": "AuthorizedRouteHandler",
+      "route": {
+        "@id": "urn:cga:core:AccountGoogleRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": { "@id": "urn:solid-server:default:AccountLoginRoute" },
+        "relativePath": "google/"
+      },
+      "source": {
+        "@type": "ViewInteractionHandler",
+        "source": {
+          "@id": "urn:cga:core:CreateGoogleHandler",
+          "@type": "CreateGoogleHandler",
+          "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+          "googleRoute": { "@id": "urn:cga:core:AccountGoogleIdRoute" }
+        }
+      }
+    },
+
+    {
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [{ "@id": "urn:cga:core:AccountGoogleRouter" }]
+    },
+
+    {
+      "@id": "urn:cga:core:GoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "create",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:AccountGoogleRoute" }
+      }]
+    },
+
+    {
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:cga:core:CreateGoogleHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "cga:templates/identity/password/create.html.ejs",
+        "route": { "@id": "urn:cga:core:AccountGoogleRoute" }
+      }]
+    },
+    {
+      "ControlHandler:_controls_value": {
+        "@id": "urn:cga:core:GoogleHtmlControlHandler",
+        "@type": "ControlHandler",
+        "controls": [{
+          "ControlHandler:_controls_key": "create",
+          "ControlHandler:_controls_value": { "@id": "urn:cga:core:AccountGoogleRoute" }
+        }]
+      }
+    }
+  ]
+}

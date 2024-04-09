@@ -1,0 +1,39 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Handles the google link details such as delete.",
+      "@id": "urn:cga:core:AccountGoogleIdRouter",
+      "@type": "AuthorizedRouteHandler",
+      "route": {
+        "@id": "urn:cga:core:AccountGoogleIdRoute",
+        "@type": "BaseGoogleIdRoute",
+        "base": { "@id": "urn:cga:core:AccountGoogleRoute" }
+      },
+      "source": {
+        "@id": "urn:cga:core:GoogleResourceHandler",
+        "@type": "WaterfallHandler",
+        "handlers": [
+          {
+            "@type": "MethodFilterHandler",
+            "methods": [ "DELETE" ],
+            "source": {
+              "@type": "DeleteGoogleHandler",
+              "googleRoute": { "@id": "urn:cga:core:AccountGoogleIdRoute" },
+              "googleStore": { "@id": "urn:cga:core:GoogleStore" }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [{ "@id": "urn:cga:core:AccountGoogleIdRouter" }]
+    }
+  ]
+}
