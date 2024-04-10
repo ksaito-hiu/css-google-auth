@@ -9,5 +9,36 @@
     "cga:config/identity/handler/routing/google/login.json",
     "cga:config/identity/handler/routing/google/resource.json"
   ],
-  "@graph": []
+  "@graph": [
+    { "comment": "Adding the necessary controls(googleを入れるコントロールを追加する)",
+      "@id": "urn:solid-server:default:ControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "google",
+          "ControlHandler:_controls_value": {
+            "comment": "All controls associated with the google login method.",
+            "@id": "urn:cga:core:GoogleControlHandler",
+            "@type": "ControlHandler",
+            "controls": []
+          }
+        }
+      ]
+    },
+    {
+      "@id": "urn:solid-server:default:HtmlControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "google",
+          "ControlHandler:_controls_value": {
+            "comment": "All controls associated with the google login method.",
+            "@id": "urn:cga:core:GoogleHtmlControlHandler",
+            "@type": "ControlHandler",
+            "controls": []
+          }
+        }
+      ]
+    }
+  ]
 }

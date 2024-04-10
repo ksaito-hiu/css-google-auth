@@ -31,7 +31,7 @@
       "handlers": [{ "@id": "urn:cga:core:AccountGoogleRouter" }]
     },
 
-    {
+    { "comment": "Adding the necessary controls(googleコントロールの中にcreateを追加する)",
       "@id": "urn:cga:core:GoogleControlHandler",
       "@type": "ControlHandler",
       "controls": [{

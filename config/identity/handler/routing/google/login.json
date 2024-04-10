@@ -32,7 +32,7 @@
       "handlers": [{ "@id": "urn:cga:core:LoginGoogleRouter" }]
     },
 
-    {
+    { "comment": "Adding the necessary controls(googleコントロールの中にloginを追加する)",
       "@id": "urn:cga:core:GoogleControlHandler",
       "@type": "ControlHandler",
       "controls": [{
@@ -40,8 +40,17 @@
         "ControlHandler:_controls_value": { "@id": "urn:cga:core:LoginGoogleRoute" }
       }]
     },
-
-    {
+    { "comment": "コントロールのloginの所に登録することでlogin画面の最初に選択肢が表示されるようになる。",
+      "@id": "urn:solid-server:default:LoginHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "GoogleOIDC authentication",
+          "ControlHandler:_controls_value": { "@id": "urn:cga:core:LoginGoogleRoute" }
+        }
+      ]
+    },
+    { 
       "@id": "urn:solid-server:default:HtmlViewHandler",
       "@type": "HtmlViewHandler",
       "templates": [{
@@ -51,7 +60,7 @@
         "route": { "@id": "urn:cga:core:LoginGoogleRoute" }
       }]
     },
-    {
+    { "comment": "Adding HTML(login-googleのHTMLをコントロールのHTMLの所に追加)",
       "ControlHandler:_controls_value": {
         "@id": "urn:cga:core:GoogleHtmlControlHandler",
         "@type": "ControlHandler",
