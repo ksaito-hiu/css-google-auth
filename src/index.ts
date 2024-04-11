@@ -5,3 +5,5 @@ export * from './identity/interaction/google/DeleteGoogleHandler';
 export * from './identity/interaction/google/util/GoogleIdRoute';
 export * from './identity/interaction/google/util/GoogleStore';
 export * from './identity/interaction/google/util/BaseGoogleStore';
+export * from './identity/interaction/google/util/GSessionStore';
+export * from './identity/interaction/google/util/BaseGSessionStore';

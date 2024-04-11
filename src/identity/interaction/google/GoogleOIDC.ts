@@ -2,12 +2,12 @@ import { Initializer, getLoggerFor, InteractionRoute } from '@solid/community-se
 import { Issuer, generators } from 'openid-client';
 
 export class GoogleOIDC extends Initializer {
+  private readonly logger;
   private readonly google_route;
   private readonly client_id;
   private readonly client_secret;
-  private issuer: any;
-  private client: any;
-  private readonly logger;
+  public issuer: any;
+  public client: any;
 
   public constructor(g_route: InteractionRoute, c_id: string, c_secret: string) {
     super();
@@ -37,5 +37,11 @@ console.log("GAHA: ",this.client_secret);
       this.logger.error('Google OIDC Client could not initialize.');
 console.log("GAHA: ",err);
     }
+  }
+
+  public createCode(): { code_verifier: string, code_challenge: string } {
+    const code_verifier = generators.codeVerifier();
+    const code_challenge = generators.codeChallenge(code_verifier);
+    return { code_verifier, code_challenge };
   }
 }

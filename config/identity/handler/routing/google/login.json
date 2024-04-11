@@ -19,9 +19,14 @@
         "source": {
           "@id": "urn:cga:core:GoogleLoginHandler",
           "@type": "GoogleLoginHandler",
-          "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
+          "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
           "googleStore": { "@id": "urn:cga:core:GoogleStore" },
-          "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
+          "googleRoute": {
+            "@id": "urn:cga:core:GoogleIdRoute",
+            "@type": "BaseGoogleIdRoute",
+            "base": { "@id": "urn:solid-server:default:AccountIdRoute" }
+          },
+          "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
         }
       }
     },
@@ -56,7 +61,7 @@
       "templates": [{
         "@id": "urn:cga:core:GoogleLoginHtml",
         "@type": "HtmlViewEntry",
-        "filePath": "cga:templates/identity/password/login.html.ejs",
+        "filePath": "templates/identity/google/login-google.html.ejs",
         "route": { "@id": "urn:cga:core:LoginGoogleRoute" }
       }]
     },

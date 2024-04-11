@@ -10,7 +10,7 @@
     "cga:config/identity/handler/routing/google/resource.json"
   ],
   "@graph": [
-    { "comment": "Adding the necessary controls(googleを入れるコントロールを追加する)",
+    { "comment": "コントロールのトップ(control)にgoogleを追加",
       "@id": "urn:solid-server:default:ControlHandler",
       "@type": "ControlHandler",
       "controls": [
@@ -25,7 +25,7 @@
         }
       ]
     },
-    {
+    { "comment": "コントロールのcontrol.htmlにgoogleを追加",
       "@id": "urn:solid-server:default:HtmlControlHandler",
       "@type": "ControlHandler",
       "controls": [

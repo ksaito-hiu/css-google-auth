@@ -36,6 +36,7 @@ export class BaseGoogleStore extends Initializer implements GoogleStore {
 
   // Initialize the type definitions
   public async handle(): Promise<void> {
+console.log('GAHA: BaseGoogleStore#handle');
     if (this.initialized) {
       return;
     }

@@ -5,12 +5,30 @@
   ],
   "@graph": [
     {
+      "comment": "BaseGoogleStoreとBaseGSessionStoreを作る。BaseGoogleStoreの方は初期化も。"
+    },
+    { "comment": "BaseGoogleStore生成",
       "@id": "urn:cga:core:GoogleStore",
       "@type": "BaseGoogleStore",
       "storage": { "@id": "urn:solid-server:default:AccountStorage" }
     },
+
+    { "comment": "BaseGSessionStore生成",
+      "@id": "urn:cga:core:GSessionStore",
+      "@type": "BaseGSessionStore",
+      "storage": {
+        "@id": "urn:cga:core:GSessionStorage",
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/gsession/",
+          "source": { "@id": "urn:solid-server:default:KeyValueStorage" }
+        }
+      }
+    },
+
     {
-      "comment": "Initialize the google store. Also necessary on primary thread for pod seeding.",
+      "comment": "Initialize the google session store. Also necessary on primary thread for pod seeding.",
       "@id": "urn:solid-server:default:PrimaryParallelInitializer",
       "@type": "ParallelHandler",
       "handlers": [
@@ -18,13 +36,12 @@
       ]
     },
     {
-      "comment": "Initialize the google store.",
+      "comment": "Initialize the google session store.",
       "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
       "@type": "ParallelHandler",
       "handlers": [
         { "@id": "urn:cga:core:GoogleStore" }
       ]
-    },
-
+    }
   ]
 }

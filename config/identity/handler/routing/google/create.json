@@ -19,8 +19,10 @@
         "source": {
           "@id": "urn:cga:core:CreateGoogleHandler",
           "@type": "CreateGoogleHandler",
+          "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
           "googleStore": { "@id": "urn:cga:core:GoogleStore" },
-          "googleRoute": { "@id": "urn:cga:core:AccountGoogleIdRoute" }
+          "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
+          "gSessionStore": { "@id": "urn:cga:core:GSessionStore" }
         }
       }
     },
@@ -46,7 +48,7 @@
       "templates": [{
         "@id": "urn:cga:core:CreateGoogleHtml",
         "@type": "HtmlViewEntry",
-        "filePath": "cga:templates/identity/password/create.html.ejs",
+        "filePath": "templates/identity/google/create-google.html.ejs",
         "route": { "@id": "urn:cga:core:AccountGoogleRoute" }
       }]
     },
