@@ -3,24 +3,15 @@
   <p class="error" id="error"></p>
 
   <fieldset>
-    <legend>Your account</legend>
+    <legend>Please click the link below to be authenticated by Google.</legend>
     <ol>
       <li>
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" autofocus>
-      </li>
-      <li>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password">
-      </li>
-      <li class="checkbox">
-        <label><input type="checkbox" name="remember" value="true" checked>Stay logged in</label>
+        <a id="link-to-google" href="">Google Authentication.</a>
       </li>
     </ol>
   </fieldset>
 
   <p class="actions">
-    <button type="submit" name="submit" disabled>Log in</button>
     <button class="hidden" type="button" id="cancel">Cancel</button>
   </p>
 
@@ -41,17 +32,30 @@
       location.href = (await res.json()).location;
     });
 
-    addPostListener(async() => {
-      const json = await postJsonForm(controls.google.login, false,
-        (json) => Object.assign(json, { remember: Boolean(json.remember) }));
-      // In case there was no forced OIDC redirect, just go to the main account page
-      if (json) {
-        // Now with cookie
-        controls = await fetchControls('<%= idpIndex %>');
-        location.href = controls.html.account.account;
-      }
-    });
-
     updateElement('register-link', controls.html.google.register, { href: true });
+
+    const queryStr = window.location.search.slice(1);
+    const queries = {};
+    if (queryStr) {
+      queryStr.split('&').forEach((kv)=>{
+        const [k,v] = kv.split('=');
+        queries[k] = v;
+      });
+    }
+    console.log("GAHA: queries=",queries);
+    if (queries['scope']) {
+      // クエリ文字列にscopeがあったらcallbackで帰ってきた時と見なす
+      const res = await postJson(controls.google.login,{ url: window.location.href });
+      const json = await res.json();
+console.log("GAHA: json=",json);
+    } else {
+      // それ以外は、ログイン前の状態と見なす
+      const res = await fetch(controls.google.login);
+      const json = await res.json();
+console.log("GAHA: json=",json);
+      const goToUrl = json.goToUrl;
+console.log("GAHA: goToUrl=",goToUrl);
+      document.querySelector('#link-to-google').setAttribute('href',goToUrl);
+    }
   })();
 </script>

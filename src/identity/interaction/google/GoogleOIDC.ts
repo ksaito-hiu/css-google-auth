@@ -23,7 +23,8 @@ console.log("GAHA: ",this.client_secret);
   public async handle(input: void): Promise<void> {
     this.issuer = await Issuer.discover('https://accounts.google.com');
     const redirect_uris = [
-      this.google_route + 'callback/'
+      //this.google_route + 'callback/'
+      'http://localhost:3000/.account/login/google/' // GAHA!
     ];
     try {
       this.client = new this.issuer.Client({

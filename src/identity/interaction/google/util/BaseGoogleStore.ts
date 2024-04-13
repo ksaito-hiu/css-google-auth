@@ -1,4 +1,3 @@
-import { compare, hash } from 'bcryptjs';
 import { Initializer } from '@solid/community-server';
 import { getLoggerFor } from '@solid/community-server';
 import { BadRequestHttpError } from '@solid/community-server';
@@ -86,10 +85,10 @@ console.log('GAHA: BaseGoogleStore#handle');
       .map(({ id, google_sub }): { id: string; google_sub: string } => ({ id, google_sub }));
   }
 
-  public async authenticate(): Promise<{ accountId: string; id: string }> {
+  public async authenticate(sub: string): Promise<{ accountId: string; id: string }> {
     // ここで色々やってgoogle_subを手に入れる。認証失敗したりしたら例外を出す。
     // とりあえず認証成功したとしてダミーを入れておく。
-    const google_sub = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const google_sub = sub;
     const payload = await this.storage.find(GOOGLE_STORAGE_TYPE, { google_sub });
     if (payload.length === 0) {
       this.logger.warn(`Trying to get account info for unknown google_sub ${google_sub}`);

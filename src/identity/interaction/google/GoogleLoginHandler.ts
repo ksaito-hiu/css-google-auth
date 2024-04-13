@@ -1,4 +1,4 @@
-import { boolean, object, string } from 'yup';
+import { object, string } from 'yup';
 import { getLoggerFor } from '@solid/community-server';
 import type { AccountStore } from '@solid/community-server';
 import type { CookieStore } from '@solid/community-server';
@@ -8,17 +8,17 @@ import type { JsonView } from '@solid/community-server';
 import type { LoginOutputType } from '@solid/community-server';
 import { ResolveLoginHandler } from '@solid/community-server';
 import { parseSchema, URL_SCHEMA, validateWithError } from '@solid/community-server';
-import type { GoogleStore } from './util/GoogleStore';
+import { GoogleStore } from './util/GoogleStore';
 import { SOLID_META } from '@solid/community-server';
 import { DataFactory } from 'n3';
 import namedNode = DataFactory.namedNode;
-import type { GSessionStore } from './util/GSessionStore';
-import type { GoogleIdRoute } from './util/GoogleIdRoute';
-import type { GoogleOIDC } from './GoogleOIDC';
+import { GSessionStore } from './util/GSessionStore';
+import { GoogleIdRoute } from './util/GoogleIdRoute';
+import { GoogleOIDC } from './GoogleOIDC';
 
-const inSchema = object({
-  google_sub: string().required(),
-});
+const inSchema = object({url:string()});
+
+type OutType = { goToUrl: string };
 
 export interface GoogleLoginHandlerArgs {
   googleOIDC: GoogleOIDC;
@@ -48,38 +48,48 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
     this.gSessionStore = args.gSessionStore;
   }
 
-  public async getView({ metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
+  public async getView(args: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
+    const { accountId, json, metadata } = args;
     const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
     if (!cookie) {
       throw new Error('GoogleLoginHandler: no cookie.');
     }
-    const code_verifier = 'abcdefg'+(new Date()).toISOString();
+    const { code_verifier, code_challenge } = this.googleOIDC.createCode();
     this.gSessionStore.set(cookie,'code_verifier',code_verifier);
-console.log('GAHA: cookie=',cookie);
-    return { json: parseSchema(inSchema) };
-    // let res,json;
-    // res = await fetch('http://localhost:3000/.account/login/google/');
-    // json = await res.json();
+    const redirect_url = args.target; // http://localhost:3000/.account/login/google/ のはず
+    const params = {
+      scope: 'openid email  profile',
+      code_challenge,
+      code_challenge_method: 'S256',
+      redirect_url
+    };
+    const goToUrl = this.googleOIDC.client.authorizationUrl(params);
+    return { json: { ...parseSchema(inSchema), goToUrl }};
   }
 
-  public async login({ json, metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation<LoginOutputType>> {
-    const { google_sub } = await validateWithError(inSchema, json);
-    // Try to log in, will error if email/password combination is invalid
-    //const { accountId } = await this.googleStore.authenticate(google_sub);
-const accountId = 'gaha';
-    //this.logger.debug(`Logging in user ${google_sub}`);
-
+  // 上のhandleと以下のloginは同時に同じ引数で呼ばれるっぽい。
+  public async login(args: JsonInteractionHandlerInput): Promise<JsonRepresentation<LoginOutputType>> {
+    const { json, metadata } = args;
+    const { url } = await validateWithError(inSchema, json);
     const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
     if (!cookie) {
       throw new Error('GoogleLoginHandler: no cookie.');
     }
-    const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
-console.log('GAHA: code_verifier=',code_verifier);
 
+    let sub = 'dummy';
+    try {
+      const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
+
+      const queries = this.googleOIDC.client.callbackParams(url);
+      const tokenSet = await this.googleOIDC.client.callback('http://localhost:3000/.account/login/google/',
+                                                             queries,{ code_verifier });
+      const claims = tokenSet.claims();
+      sub = claims.sub;
+      this.gSessionStore.delete(cookie,'code_verifier');
+    } catch(err) {
+      console.log("GoogleLoginHandler: err=",err);
+    }
+    const { accountId } = await this.googleStore.authenticate(sub);
     return { json: { accountId }};
-    // let res,json;
-    // res = await fetch('http://localhost:3000/.account/login/google/',
-    //  {method:'POST',headers:{'Content-Type':'application/json'},body:'{"google_sub":"12345"}'});
-    // json = await res.json();
   }
 }
