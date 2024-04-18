@@ -1,5 +1,14 @@
 import { Initializer, getLoggerFor, InteractionRoute } from '@solid/community-server';
 import { Issuer, generators } from 'openid-client';
+import { createVocabulary } from '@solid/community-server';
+
+// Cookieに関するVocablaryを定義
+export const CGA = createVocabulary(
+  'urn:npm:css-google-auth:http:',
+  // Used for metadata for cookie used in GoogleOIDC.
+  'cgaCookie',
+  'cgaCookieExpiration'
+);
 
 export class GoogleOIDC extends Initializer {
   private readonly logger;

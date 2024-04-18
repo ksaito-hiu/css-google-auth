@@ -1,4 +1,5 @@
 export * from './identity/interaction/google/GoogleOIDC';
+export * from './identity/interaction/google/GoogleOIDCHandler';
 export * from './identity/interaction/google/CreateGoogleHandler';
 export * from './identity/interaction/google/GoogleLoginHandler';
 export * from './identity/interaction/google/DeleteGoogleHandler';

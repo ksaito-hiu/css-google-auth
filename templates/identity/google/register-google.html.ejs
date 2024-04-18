@@ -1,0 +1,80 @@
+<h1>Create account</h1>
+<form method="post" id="mainForm">
+  <p class="error" id="error"></p>
+
+  <fieldset>
+    <p>Select a user and login Google to create a new account</p>
+    <ol>
+      <li>
+        <a id="link-to-google" href="">Google Authentication.</a>
+      </li>
+    </ol>
+  </fieldset>
+
+  <p class="actions">
+    <button type="button" id="login-link">Back</button>
+  </p>
+</form>
+
+
+<script>
+  (async() => {
+    let controls = await fetchControls('<%= idpIndex %>');
+
+    setRedirectClick('login-link', controls.html.google.login);
+
+    const queryStr = window.location.search.slice(1);
+    const queries = {};
+    if (queryStr) {
+      queryStr.split('&').forEach((kv)=>{
+        const [k,v] = kv.split('=');
+        queries[k] = v;
+      });
+    }
+    console.log("GAHA: queries=",queries);
+    if (queries['scope']) {
+      // クエリ文字列にscopeがあったらcallbackで帰ってきた時と見なす
+      const res = await postJson(controls.google.create,{ url: window.location.href });
+      const json = await res.json();
+      console.log("GAHA: json=",json);
+
+      const res = await fetch(controls.account.create, {method: 'POST'});
+      const json = await res.json();
+      // Will only be defined if we are in a OIDC interaction
+      const oidcLocation = json.location;
+      controls = await fetchControls('<%= idpIndex %>');
+      let googleCreateUrl;
+      passwordCreateUrl = controls.password.create;
+
+      
+    } else {
+      // それ以外は、ログイン前の状態と見なす
+      const res = await fetch(controls.google.create);
+      const json = await res.json();
+console.log("GAHA: json=",json);
+      const goToUrl = json.goToUrl;
+console.log("GAHA: goToUrl=",goToUrl);
+      document.querySelector('#link-to-google').setAttribute('href',goToUrl);
+    }
+    addPostListener(async() => {
+
+      // Caching account in case there is an error adding the password login
+      if (!googleCreateUrl) {
+
+        // Now with cookie
+      }
+
+      await postJsonForm(passwordCreateUrl);
+
+      // In case there is an OIDC location, we need to fetch it to force the OIDC library to go to the next step
+      if (oidcLocation) {
+        // Doing this after creating the password login to prevent incomplete accounts
+        await fetch(oidcLocation);
+      }
+
+      // We go to the account page even if we are in a OIDC interaction
+      // as the user would need to link a WebID anyway before an interaction can be completed.
+      location.href = controls.html.account.account;
+    });
+  })();
+</script>

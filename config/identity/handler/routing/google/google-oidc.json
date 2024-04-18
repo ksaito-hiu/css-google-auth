@@ -5,6 +5,41 @@
   ],
   "@graph": [
     {
+      "comment": "まずGoogleOIDCに必要なCookieを使えるようにする"
+    },
+    {
+      "comment": "GoogleのOIDC認証中だけ必要なクッキーを定義",
+      "@id": "urn:cga:core:value:cgaCookieName",
+      "valueRaw": "cga-cookie"
+    },
+    {
+      "comment": "もとからあるCookieParserに必要な物を追加で登録",
+      "@id": "urn:solid-server:default:CookieParser",
+      "@type": "CookieParser",
+      "cookieMap": [
+        {
+          "CookieParser:_cookieMap_key": { "@id": "urn:cga:core:value:cgaCookieName" },
+          "CookieParser:_cookieMap_value": "urn:npm:css-google-auth:http:cgaCookie"
+        }
+      ]
+    },
+    {
+      "comment": "もともとあるCookieMetadataWriterに必要な物を追加で登録",
+      "@id": "urn:solid-server:default:MetadataWriter_Cookie",
+      "@type": "CookieMetadataWriter",
+      "cookieMap": [
+        {
+          "CookieMetadataWriter:_cookieMap_key": "urn:npm:css-google-auth:http:cgaCookie",
+          "CookieMetadataWriter:_name": { "@id": "urn:cga:core:value:cgaCookieName" },
+          "CookieMetadataWriter:_expirationUri": "urn:npm:css-google-auth:http:cgaCookieExpiration"
+        }
+      ]
+    },
+
+    {
+      "comment": "GoogleOIDCのインスタンス"
+    },
+    {
       "@id": "urn:cga:core:GoogleOIDC",
       "@type": "GoogleOIDC",
       "g_route": { "@id": "urn:solid-server:default:AccountRoute" },
@@ -17,6 +52,51 @@
       "handlers": [
         { "@id" : "urn:cga:core:GoogleOIDC" }
       ]
-    }
+    },
+
+    {
+      "comment": "GoogleOIDCHandlerの生成とルーティングの設定。"
+    },
+    {
+      "@id": "urn:cga:core:OIDCGoogleRouter",
+      "@type": "InteractionRouteHandler",
+      "route": {
+        "@id": "urn:cga:core:OIDCGoogleRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": {
+          "@id": "urn:cga:core:GoogleRoute",
+          "@type": "RelativePathInteractionRoute",
+          "base": { "@id": "urn:solid-server:default:IndexRoute" },
+          "relativePath": "google/"
+        },
+        "relativePath": "oidc/"
+      },
+      "source": {
+        "@type": "ViewInteractionHandler",
+        "source": {
+          "comment": "GoogleOIDCHandlerのインスタンス",
+          "@id": "urn:cga:core:GoogleOIDCHandler",
+          "@type": "GoogleOIDCHandler",
+          "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
+          "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
+          "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+          "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
+          "cookieStore": { "@id": "urn:solid-server:default:CookieStore" }
+        }
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [{ "@id": "urn:cga:core:OIDCGoogleRouter" }]
+    },
+    { "comment": "Adding the necessary controls(googleコントロールの中にoidcを追加する)",
+      "@id": "urn:cga:core:GoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "oidc",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:OIDCGoogleRoute" }
+      }]
+    },
   ]
 }
