@@ -1,31 +1,16 @@
 <h1>Create account: GOOGLE</h1>
-<form method="post" id="mainForm">
-  <p class="error" id="error"></p>
 
-  <fieldset>
-    <p>Choose the credentials you want to use to log in to this server in the future</p>
-    <ol>
-      <li>
-        <label for="email">Email:</label>
-        <input id="email" type="email" name="email" autofocus>
-      </li>
-      <li>
-        <label for="password">Password:</label>
-        <input id="password" type="password" name="password">
-      </li>
-      <li>
-        <label for="confirmPassword">Confirm password:</label>
-        <input id="confirmPassword" type="password" name="confirmPassword">
-      </li>
-    </ol>
-  </fieldset>
+<p class="error" id="error"></p>
 
-  <ul class="actions">
-    <li><button type="submit" name="submit" disabled>Add login</button></li>
-    <li><button type="button" id="account-link">Back</button></li>
-  </ul>
-</form>
+<fieldset>
+  <legend>
+    <a id="link-to-google" href="">Please click this link to be authenticated by Google.</a>
+  </legend>
+</fieldset>
 
+<ul class="actions">
+  <li><button type="button" id="account-link">Back</button></li>
+</ul>
 
 <script>
   (async() => {
@@ -34,11 +19,26 @@
     const { controls } = await res.json();
     setRedirectClick('account-link', controls.html.account.account);
 
-    addPostListener(async(event) => {
-      validatePasswordConfirmation('password');
-
-      await postJsonForm(controls.google.create);
-      location.href = controls.html.account.account;
-    });
+    const queryStr = window.location.search.slice(1);
+    const queries = {};
+    if (queryStr) {
+      queryStr.split('&').forEach((kv)=>{
+        const [k,v] = kv.split('=');
+        queries[k] = v;
+      });
+    }
+console.log("GAHA: queries=",queries);
+    if (queries['scope']) {
+      // クエリ文字列にscopeがあったらoidc-google.html.ejsからリダイレクトされて来た時と見なす
+      const res = await postJson(controls.google.create,{ url: window.location.href });
+      const json = await res.json();
+console.log("GAHA: json=",json);
+      //location.href = controls.html.account.account;
+    } else {
+      // それ以外は、ログイン前の状態と見なす
+      const res = await postJson(controls.google.oidc,{func:'makeUrl',stage:'create'});
+      const { response } = await res.json();
+      document.querySelector('#link-to-google').setAttribute('href',response);
+    }
   })();
 </script>

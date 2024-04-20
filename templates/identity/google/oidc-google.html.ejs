@@ -1,0 +1,53 @@
+<h1>GOOGLE OIDC Callback</h1>
+<form method="post" id="mainForm">
+  <p class="error" id="error"></p>
+
+  <fieldset>
+    <legend>This page is accessed by Google OIDC callback.</legend>
+  </fieldset>
+
+  <ul class="actions">
+    <li><button type="button" id="account-link">Back</button></li>
+  </ul>
+</form>
+
+
+<script>
+  (async() => {
+    let res = await fetch('<%= idpIndex %>', { headers: { accept: 'application/json' } });
+
+    const { controls } = await res.json();
+    setRedirectClick('account-link', controls.html.account.account);
+
+    const queryStr = window.location.search.slice(1);
+    const queries = {};
+    if (queryStr) {
+      queryStr.split('&').forEach((kv)=>{
+        const [k,v] = kv.split('=');
+        queries[k] = v;
+      });
+    }
+    console.log("GAHA: queries=",queries);
+    if (queries['scope']) {
+      // クエリ文字列にscopeがあったらcallbackで帰ってきた時と見なす
+      const res = await postJson(controls.google.oidc,{ func: 'redirect', stage: 'dummy' });
+      const { response } = await res.json();
+      console.log("GAHA: response=",response);
+      let url;
+      if (response === 'login') {
+        url = controls.html.google.login + window.location.search;
+      } else if (response === 'create' ) {
+        url = controls.html.google.create + window.location.search;
+      } else {
+        url = controls.html.account.account;
+      }
+console.log("GAHA: ",url);
+      //location.href = url;
+    } else {
+      // callbackでGoogleから帰ってきた状態ではない
+      document.querySelector('#error').textContent = "This page must not accessed ";
+
+      document.querySelector('#link-to-google').setAttribute('href',goToUrl);
+    }
+  })();
+</script>

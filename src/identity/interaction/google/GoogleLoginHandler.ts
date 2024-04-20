@@ -16,9 +16,11 @@ import { GSessionStore } from './util/GSessionStore';
 import { GoogleIdRoute } from './util/GoogleIdRoute';
 import { GoogleOIDC } from './GoogleOIDC';
 
-const inSchema = object({url:string()});
+const inSchema = object({
+  url:string().required(),
+});
 
-type OutType = { goToUrl: string };
+type OutType = { result: string };
 
 export interface GoogleLoginHandlerArgs {
   googleOIDC: GoogleOIDC;
@@ -67,7 +69,9 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
     return { json: { ...parseSchema(inSchema), goToUrl }};
   }
 
-  // 上のhandleと以下のloginは同時に同じ引数で呼ばれるっぽい。
+  // 通常のResolveLoginHandlerのhandleメソッドの一番最初に以下のloginが呼び出される。
+  // returnでaccountIdを返せば、あとのログイン操作はResolveLoginHandlerのhandleの残りの
+  // プログラムがやってくれる。
   public async login(args: JsonInteractionHandlerInput): Promise<JsonRepresentation<LoginOutputType>> {
     const { json, metadata } = args;
     const { url } = await validateWithError(inSchema, json);

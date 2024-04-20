@@ -1,25 +1,20 @@
 <h1>Log in: GOOGLE</h1>
-<form method="post" id="mainForm">
-  <p class="error" id="error"></p>
 
-  <fieldset>
-    <legend>Please click the link below to be authenticated by Google.</legend>
-    <ol>
-      <li>
-        <a id="link-to-google" href="">Google Authentication.</a>
-      </li>
-    </ol>
-  </fieldset>
+<p class="error" id="error"></p>
 
-  <p class="actions">
-    <button class="hidden" type="button" id="cancel">Cancel</button>
-  </p>
+<fieldset>
+  <legend>
+    <a id="link-to-google" href="">Please click the link below to be authenticated by Google.</a>
+  </legend>
+</fieldset>
 
-  <ul class="actions">
-    <li><a id="register-link" href="" class="link">Sign up</a></li>
-  </ul>
-</form>
+<p class="actions">
+  <button class="hidden" type="button" id="cancel">Cancel</button>
+</p>
 
+<ul class="actions">
+  <li><a id="register-link" href="" class="link">Sign up</a></li>
+</ul>
 
 <script>
   (async() => {
@@ -48,6 +43,7 @@
       const res = await postJson(controls.google.login,{ url: window.location.href });
       const json = await res.json();
 console.log("GAHA: json=",json);
+      //location.href = controls.html.account.account;
     } else {
       // それ以外は、ログイン前の状態と見なす
       const res = await fetch(controls.google.login);

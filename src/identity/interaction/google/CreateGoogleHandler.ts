@@ -6,18 +6,18 @@ import { JsonInteractionHandler } from '@solid/community-server';
 import type { JsonInteractionHandlerInput } from '@solid/community-server';
 import type { JsonView } from '@solid/community-server';
 import { parseSchema, validateWithError } from '@solid/community-server';
-import type { GoogleIdRoute } from './util/GoogleIdRoute';
-import type { GoogleStore } from './util/GoogleStore';
-import type { GoogleOIDC } from './GoogleOIDC';
+import { GoogleIdRoute } from './util/GoogleIdRoute';
+import { GoogleStore } from './util/GoogleStore';
+import { GoogleOIDC, CGA } from './GoogleOIDC';
+import { GSessionStore } from './util/GSessionStore';
 import { SOLID_META } from '@solid/community-server';
 import { DataFactory } from 'n3';
 import namedNode = DataFactory.namedNode;
-import type { GSessionStore } from './util/GSessionStore';
 
 type OutType = { resource: string };
 
 const inSchema = object({
-  google_sub: string().required(),
+  url: string().required(),
 });
 
 /**
@@ -45,42 +45,40 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
     for (const { id, google_sub } of await this.googleStore.findByAccount(accountId)) {
       googleLogins[google_sub] = this.googleRoute.getPath({ accountId, googleId: id });
     }
-    const { code_verifier, code_challenge } = this.googleOIDC.createCode();
-    const params = {
-      scope: 'openid email  profile',
-      code_challenge,
-      code_challenge_method: 'S256'
-    };
-    const goToUrl = this.googleOIDC.client.authorizationUrl(params);
-    const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
-    if (!cookie) {
-      throw new Error('CreateGoogleHandler: no cookie.');
-    }
-    this.gSessionStore.set(cookie,'code_verifier',code_verifier);
-    return { json: { ...parseSchema(inSchema), googleLogins, goToUrl }};
+    return { json: { ...parseSchema(inSchema), googleLogins }};
     // let res,json;
     // res = await fetch('http://localhost:3000/.account/account/d014c5d9-a780-494f-ac3a-10e8a821794f/login/google/');
     // json = await res.json();
   }
 
   public async handle({ accountId, json, metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {
-    const { google_sub } = await validateWithError(inSchema, json);
     assertAccountId(accountId);
-    console.log("GAHA2: accountId=",accountId);
+console.log("GAHA2: accountId=",accountId);
+    const { url } = await validateWithError(inSchema, json);
 
-    const googleId = await this.googleStore.create(google_sub, accountId);
-    const resource = this.googleRoute.getPath({ googleId, accountId });
-
-    const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
+    const cookie = metadata.get(CGA.terms.cgaCookie)?.value;
     if (!cookie) {
       throw new Error('CreateGoogleHandler: no cookie.');
     }
     const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
 console.log(code_verifier);
 
+    let sub = 'dummy';
+    try {
+      const queries = this.googleOIDC.client.callbackParams(url);
+      const callbackUrl = 'http://localhost:3000/.account/google/oidc/'; // GAHA: 動的に入手する方法？
+      const tokenSet = await this.googleOIDC.client.callback(callbackUrl,queries,{ code_verifier });
+      const claims = tokenSet.claims();
+      sub = claims.sub;
+      this.gSessionStore.delete(cookie,'code_verifier');
+    } catch(err) {
+      console.log("GoogleLoginHandler: err=",err);
+    }
+
+    // GAHA TODO googleId作る前にsubが重複しないか調べてから実行するべし。
+    const googleId = await this.googleStore.create(sub, accountId);
+    const resource = this.googleRoute.getPath({ googleId, accountId });
+
     return { json: { resource }};
-    // let res,json;
-    // res = await fetch('http://localhost:3000/.account/account/d014c5d9-a780-494f-ac3a-10e8a821794f/login/google/',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"google_sub":"1234"}'});
-    // json = await res.json();
   }
 }

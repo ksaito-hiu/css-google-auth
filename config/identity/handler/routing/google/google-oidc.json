@@ -98,5 +98,26 @@
         "ControlHandler:_controls_value": { "@id": "urn:cga:core:OIDCGoogleRoute" }
       }]
     },
+    {
+      "comment": "このテンプレートはGoogle OIDCからのコールバックを受けるページになる。",
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:cga:core:GoogleOIDCHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "templates/identity/google/oidc-google.html.ejs",
+        "route": { "@id": "urn:cga:core:OIDCGoogleRoute" }
+      }]
+    },
+    { "comment": "Adding HTML(oidc-googleのHTMLをコントロールのHTMLの所に追加)",
+      "ControlHandler:_controls_value": {
+        "@id": "urn:cga:core:GoogleHtmlControlHandler",
+        "@type": "ControlHandler",
+        "controls": [{
+          "ControlHandler:_controls_key": "oidc",
+          "ControlHandler:_controls_value": { "@id": "urn:cga:core:OIDCGoogleRoute" }
+        }]
+      }
+    }
   ]
 }
