@@ -38,7 +38,7 @@ const inSchema = object({
  * 機能2: Googleからのcallbackを受け取った時にユーザがどの状態(stage: loginとかcreate)かを
  * GSessionStoreから取り出して返す機能。OIDCのHTMLページから呼び出されることを想定。
  * その状態に応じてOIDCのHTMLページのJavaScriptの機能でurlのパラメータを
- * 付けたまま適切なページにリダイレクトさせる。入力例は {func:'redirect',stage:'dummy'} の
+ * 付けたまま適切なページにリダイレクトさせる。入力例は {func:'getStage',stage:'dummy'} の
  * 1通りで、返り値は { response: 'login' } とか { response: 'create' } という感じ。
  */
 export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonView {
@@ -94,7 +94,7 @@ console.log("GAHA: ******************************MMMMMMMMMMMMMMMMMMMMMM");
         redirect_url
       };
       json.response = this.googleOIDC.client.authorizationUrl(params);
-    } else if (func === 'redirect') {
+    } else if (func === 'getStage') {
 console.log("GAHA: ******************************NNNNNNNNNNNNNNNNNNNNNNNNNN");
       const stage = await this.gSessionStore.get(cookie,'stage');
       json.response = stage ?? 'undefined';

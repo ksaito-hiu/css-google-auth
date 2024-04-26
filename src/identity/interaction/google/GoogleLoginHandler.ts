@@ -14,7 +14,7 @@ import { DataFactory } from 'n3';
 import namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
 import { GoogleIdRoute } from './util/GoogleIdRoute';
-import { GoogleOIDC } from './GoogleOIDC';
+import { GoogleOIDC, CGA } from './GoogleOIDC';
 
 const inSchema = object({
   url:string().required(),
@@ -69,24 +69,23 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
     return { json: { ...parseSchema(inSchema), goToUrl }};
   }
 
-  // 通常のResolveLoginHandlerのhandleメソッドの一番最初に以下のloginが呼び出される。
+  // 通常のResolveLoginHandlerのhandleメソッドの一番最初で以下のloginが呼び出される。
   // returnでaccountIdを返せば、あとのログイン操作はResolveLoginHandlerのhandleの残りの
   // プログラムがやってくれる。
   public async login(args: JsonInteractionHandlerInput): Promise<JsonRepresentation<LoginOutputType>> {
     const { json, metadata } = args;
     const { url } = await validateWithError(inSchema, json);
-    const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
+    const cookie = metadata.get(CGA.terms.cgaCookie)?.value;
     if (!cookie) {
       throw new Error('GoogleLoginHandler: no cookie.');
     }
+    const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
 
     let sub = 'dummy';
     try {
-      const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
-
       const queries = this.googleOIDC.client.callbackParams(url);
-      const tokenSet = await this.googleOIDC.client.callback('http://localhost:3000/.account/login/google/',
-                                                             queries,{ code_verifier });
+      const callbackUrl = 'http://localhost:3000/.account/google/oidc/'; // GAHA: 動的に入手する方法？
+      const tokenSet = await this.googleOIDC.client.callback(callbackUrl,queries,{ code_verifier });
       const claims = tokenSet.claims();
       sub = claims.sub;
       this.gSessionStore.delete(cookie,'code_verifier');
@@ -94,6 +93,6 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
       console.log("GoogleLoginHandler: err=",err);
     }
     const { accountId } = await this.googleStore.authenticate(sub);
-    return { json: { accountId }};
+    return { json: { accountId, remember: false }};
   }
 }

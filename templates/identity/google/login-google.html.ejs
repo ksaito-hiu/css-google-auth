@@ -4,7 +4,7 @@
 
 <fieldset>
   <legend>
-    <a id="link-to-google" href="">Please click the link below to be authenticated by Google.</a>
+    <a id="link-to-google" href="">Please click this link to be authenticated by Google.</a>
   </legend>
 </fieldset>
 
@@ -13,21 +13,20 @@
 </p>
 
 <ul class="actions">
-  <li><a id="register-link" href="" class="link">Sign up</a></li>
+  <li><a id="google-login-link" href="" class="link">restart google login</a></li>
 </ul>
 
 <script>
   (async() => {
     let controls = await fetchControls('<%= idpIndex %>');
 
+    document.querySelector('#google-login-link').setAttribute('href',controls.html.google.login);
     // Only show the cancel button if there is an OIDC interaction
     setVisibility('cancel', <%= authenticating %>);
     getElements('cancel').cancel.addEventListener('click', async() => {
       const res = await fetch(controls.oidc.cancel, { method: 'POST' });
       location.href = (await res.json()).location;
     });
-
-    updateElement('register-link', controls.html.google.register, { href: true });
 
     const queryStr = window.location.search.slice(1);
     const queries = {};
@@ -37,21 +36,31 @@
         queries[k] = v;
       });
     }
-    console.log("GAHA: queries=",queries);
     if (queries['scope']) {
-      // クエリ文字列にscopeがあったらcallbackで帰ってきた時と見なす
-      const res = await postJson(controls.google.login,{ url: window.location.href });
-      const json = await res.json();
-console.log("GAHA: json=",json);
-      //location.href = controls.html.account.account;
+      // クエリ文字列にscopeがあったらoidc-google.html.ejsからリダイレクトされて来た時と見なす
+      document.querySelector('#link-to-google').style.display = "none";
+      try {
+        const res = await postJson(controls.google.login,{ url: window.location.href });
+        const json = await res.json();
+console.log("GAHA2: json=",json);
+        if (json.authorization) {
+          controls = await fetchControls('<%= idpIndex %>');
+console.log("GAHA3: Logged in! a=",controls.html.account.account);
+          window.location.href = controls.html.account.account;
+        } else {
+console.log("GAHA4: Not logged in!");
+          document.querySelector('#error').textContent = json.message;
+        }
+      } catch(err) {
+console.log("GAHA5: ",err);
+        document.querySelector('#error').textContent = "Error:";
+      }
     } else {
       // それ以外は、ログイン前の状態と見なす
-      const res = await fetch(controls.google.login);
-      const json = await res.json();
-console.log("GAHA: json=",json);
-      const goToUrl = json.goToUrl;
-console.log("GAHA: goToUrl=",goToUrl);
-      document.querySelector('#link-to-google').setAttribute('href',goToUrl);
+      document.querySelector('#google-login-link').style.display = "none";
+      const res = await postJson(controls.google.oidc,{func:'makeUrl',stage:'login'});
+      const { response } = await res.json();
+      document.querySelector('#link-to-google').setAttribute('href',response);
     }
   })();
 </script>

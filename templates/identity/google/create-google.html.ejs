@@ -27,13 +27,23 @@
         queries[k] = v;
       });
     }
-console.log("GAHA: queries=",queries);
     if (queries['scope']) {
       // クエリ文字列にscopeがあったらoidc-google.html.ejsからリダイレクトされて来た時と見なす
-      const res = await postJson(controls.google.create,{ url: window.location.href });
-      const json = await res.json();
-console.log("GAHA: json=",json);
-      //location.href = controls.html.account.account;
+      document.querySelector('#link-to-google').style.display = "none";
+      try {
+        const res = await postJson(controls.google.create,{ url: window.location.href });
+        const json = await res.json();
+        if (json.resource) {
+console.log("GAHA3: Created!");
+          window.location.href = controls.html.account.account;
+        } else {
+console.log("GAHA4: Not created!");
+          document.querySelector('#error').textContent = json.message;
+        }
+      } catch(err) {
+console.log("GAHA5: ",err);
+        document.querySelector('#error').textContent = "Error:";
+      }
     } else {
       // それ以外は、ログイン前の状態と見なす
       const res = await postJson(controls.google.oidc,{func:'makeUrl',stage:'create'});

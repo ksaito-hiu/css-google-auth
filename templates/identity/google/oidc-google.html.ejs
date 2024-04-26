@@ -17,7 +17,11 @@
     let res = await fetch('<%= idpIndex %>', { headers: { accept: 'application/json' } });
 
     const { controls } = await res.json();
-    setRedirectClick('account-link', controls.html.account.account);
+console.log("GAHA0: controls=",controls);
+    if (controls.html.account?.accout)
+      setRedirectClick('account-link', controls.html.account.account);
+    else
+      setRedirectClick('account-link', controls.html.main.login);
 
     const queryStr = window.location.search.slice(1);
     const queries = {};
@@ -27,22 +31,21 @@
         queries[k] = v;
       });
     }
-    console.log("GAHA: queries=",queries);
+console.log("GAHA1: queries=",queries);
     if (queries['scope']) {
       // クエリ文字列にscopeがあったらcallbackで帰ってきた時と見なす
-      const res = await postJson(controls.google.oidc,{ func: 'redirect', stage: 'dummy' });
+      const res = await postJson(controls.google.oidc,{ func: 'getStage', stage: 'dummy' });
       const { response } = await res.json();
-      console.log("GAHA: response=",response);
-      let url;
+console.log("GAHA2: response=",response);
       if (response === 'login') {
-        url = controls.html.google.login + window.location.search;
+console.log("GAHA3: redirect=",(controls.html.google.login + window.location.search));
+        window.location.href = controls.html.google.login + window.location.search;
       } else if (response === 'create' ) {
-        url = controls.html.google.create + window.location.search;
+console.log("GAHA4: redirect=",(controls.html.google.create + window.location.search));
+        window.location.href = controls.html.google.create + window.location.search;
       } else {
-        url = controls.html.account.account;
+        document.querySelector('#error').textContent = "Error: you are in strange stage:"+response;
       }
-console.log("GAHA: ",url);
-      //location.href = url;
     } else {
       // callbackでGoogleから帰ってきた状態ではない
       document.querySelector('#error').textContent = "This page must not accessed ";

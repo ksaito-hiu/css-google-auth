@@ -53,7 +53,6 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
 
   public async handle({ accountId, json, metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {
     assertAccountId(accountId);
-console.log("GAHA2: accountId=",accountId);
     const { url } = await validateWithError(inSchema, json);
 
     const cookie = metadata.get(CGA.terms.cgaCookie)?.value;
