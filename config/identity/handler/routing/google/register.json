@@ -1,0 +1,74 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "Enable account registration by Google authentication."
+    },
+    {
+      "comment": "Handles the google register interaction.",
+      "@id": "urn:cga:core:RegisterGoogleRouter",
+      "@type": "InteractionRouteHandler",
+      "route": { "@id": "urn:cga:core:RegisterGoogleRoute" },
+      "source": {
+        "@type": "ViewInteractionHandler",
+        "source": {
+          "@id": "urn:cga:core:RegisterGoogleHandler",
+          "@type": "RegisterGoogleHandler",
+          "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
+          "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
+          "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+          "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
+          "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
+          "cookieStore": { "@id": "urn:solid-server:default:CookieStore" },
+        }
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [{ "@id": "urn:cga:core:RegisterGoogleRouter" }]
+    },
+    { "comment": "Adding the necessary controls(googleコントロールの中にregisterを追加する)",
+      "@id": "urn:cga:core:GoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "register",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:RegisterGoogleRoute" }
+      }]
+    },
+
+
+    {
+      "comment": "Route only used for an HTML page (and its corresponding controls).",
+      "@id": "urn:cga:core:RegisterGoogleRoute",
+      "@type": "RelativePathInteractionRoute",
+      "base": { "@id": "urn:cga:core:LoginGoogleRoute" },
+      "relativePath": "register/"
+    },
+    {
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [
+        {
+          "@id": "urn:cga:core:RegisterGoogleAccountHtml",
+          "@type": "HtmlViewEntry",
+          "filePath": "templates/identity/google/register-google.html.ejs",
+          "route": { "@id": "urn:cga:core:RegisterGoogleRoute" }
+        }
+      ]
+    },
+    {
+      "@id": "urn:cga:core:GoogleHtmlControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "register",
+          "ControlHandler:_controls_value": { "@id": "urn:cga:core:RegisterGoogleRoute" }
+        }
+      ]
+    }
+  ]
+}

@@ -7,7 +7,8 @@
     "cga:config/identity/handler/routing/google/google-oidc.json",
     "cga:config/identity/handler/routing/google/create.json",
     "cga:config/identity/handler/routing/google/login.json",
-    "cga:config/identity/handler/routing/google/resource.json"
+    "cga:config/identity/handler/routing/google/resource.json",
+    "cga:config/identity/handler/routing/google/register.json"
   ],
   "@graph": [
     { "comment": "コントロールのトップ(control)にgoogleを追加",
