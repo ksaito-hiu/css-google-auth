@@ -60,13 +60,14 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
       throw new Error('CreateGoogleHandler: no cookie.');
     }
     const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
-console.log(code_verifier);
+    if (!code_verifier) {
+      throw new Error('GoogleLoginHandler: no data of code_verifier.');
+    }
 
     let sub = 'dummy';
     try {
       const queries = this.googleOIDC.client.callbackParams(url);
-      const callbackUrl = 'http://localhost:3000/.account/google/oidc/'; // GAHA: 動的に入手する方法？
-      const tokenSet = await this.googleOIDC.client.callback(callbackUrl,queries,{ code_verifier });
+      const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
       const claims = tokenSet.claims();
       sub = claims.sub;
       this.gSessionStore.delete(cookie,'code_verifier');
@@ -74,8 +75,7 @@ console.log(code_verifier);
       console.log("GoogleLoginHandler: err=",err);
     }
 
-    // GAHA TODO googleId作る前にsubが重複しないか調べてから実行するべし。
-    const googleId = await this.googleStore.create(sub, accountId);
+    const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり
     const resource = this.googleRoute.getPath({ googleId, accountId });
 
     return { json: { resource }};

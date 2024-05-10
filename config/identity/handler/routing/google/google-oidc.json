@@ -42,7 +42,7 @@
     {
       "@id": "urn:cga:core:GoogleOIDC",
       "@type": "GoogleOIDC",
-      "g_route": { "@id": "urn:solid-server:default:AccountRoute" },
+      "g_route": { "@id": "urn:cga:core:OIDCGoogleRoute" },
       "c_id": "this parameter will be overrided by test.json.",
       "c_secret": "this parameter will be overrided by test.json."
     },

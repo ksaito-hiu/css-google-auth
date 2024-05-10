@@ -35,7 +35,7 @@ export class BaseGoogleStore extends Initializer implements GoogleStore {
 
   // Initialize the type definitions
   public async handle(): Promise<void> {
-console.log('GAHA: BaseGoogleStore#handle');
+//console.log('GAHA: BaseGoogleStore#handle');
     if (this.initialized) {
       return;
     }
@@ -55,7 +55,7 @@ console.log('GAHA: BaseGoogleStore#handle');
   public async create(google_sub: string, accountId: string): Promise<string> {
     if (await this.findByGoogleSub(google_sub)) {
       this.logger.warn(`Trying to create duplicate login for google_sub ${google_sub}`);
-      throw new BadRequestHttpError('There already is a login for this google_sub.');
+      throw new BadRequestHttpError('There is an entry for this google_sub already.');
     }
     const payload = await this.storage.create(GOOGLE_STORAGE_TYPE, {
       accountId,

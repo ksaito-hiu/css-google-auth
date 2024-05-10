@@ -24,8 +24,8 @@ export class GoogleOIDC extends Initializer {
     this.client_id = c_id;
     this.client_secret = c_secret;
 console.log("GAHA: ",this.google_route);
-console.log("GAHA: ",this.client_id);
-console.log("GAHA: ",this.client_secret);
+//console.log("GAHA: ",this.client_id);
+//console.log("GAHA: ",this.client_secret);
     this.logger = getLoggerFor(this);
   }
 
@@ -53,5 +53,11 @@ console.log("GAHA: ",err);
     const code_verifier = generators.codeVerifier();
     const code_challenge = generators.codeChallenge(code_verifier);
     return { code_verifier, code_challenge };
+  }
+
+  public async getTokenSet(queries: string, code_verifier: string) {
+    const callbackUrl = this.google_route;
+    const tokenSet = await this.client.callback(callbackUrl,queries,{ code_verifier });
+    return tokenSet;
   }
 }
