@@ -9,12 +9,11 @@ import type { LoginOutputType } from '@solid/community-server';
 import { ResolveLoginHandler } from '@solid/community-server';
 import { parseSchema, URL_SCHEMA, validateWithError } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
-import { SOLID_META } from '@solid/community-server';
 import { DataFactory } from 'n3';
 import namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
-import { GoogleIdRoute } from './util/GoogleIdRoute';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
+import { SOLID_HTTP } from '@solid/community-server';
 
 const inSchema = object({
   url:string().required(),
@@ -25,7 +24,6 @@ type OutType = { result: string };
 export interface GoogleLoginHandlerArgs {
   googleOIDC: GoogleOIDC;
   accountStore: AccountStore;
-  googleRoute: GoogleIdRoute;
   googleStore: GoogleStore;
   gSessionStore: GSessionStore;
   cookieStore: CookieStore;
@@ -39,20 +37,18 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
 
   private readonly googleOIDC: GoogleOIDC;
   private readonly googleStore: GoogleStore;
-  private readonly googleRoute: GoogleIdRoute;
   private readonly gSessionStore: GSessionStore;
 
   public constructor(args: GoogleLoginHandlerArgs) {
     super(args.accountStore, args.cookieStore);
     this.googleOIDC = args.googleOIDC;
     this.googleStore = args.googleStore;
-    this.googleRoute = args.googleRoute;
     this.gSessionStore = args.gSessionStore;
   }
 
   public async getView(args: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
     const { accountId, json, metadata } = args;
-    const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
+    const cookie = metadata.get(SOLID_HTTP.terms.accountCookie)?.value;
     if (!cookie) {
       throw new Error('GoogleLoginHandler: no cookie.');
     }

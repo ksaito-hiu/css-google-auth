@@ -12,29 +12,23 @@ export const CGA = createVocabulary(
 
 export class GoogleOIDC extends Initializer {
   private readonly logger;
-  private readonly google_route;
+  private readonly callback_url;
   private readonly client_id;
   private readonly client_secret;
   public issuer: any;
   public client: any;
 
-  public constructor(g_route: InteractionRoute, c_id: string, c_secret: string) {
+  public constructor(callback_route: InteractionRoute, client_id: string, client_secret: string) {
     super();
-    this.google_route = g_route.getPath();
-    this.client_id = c_id;
-    this.client_secret = c_secret;
-console.log("GAHA: ",this.google_route);
-//console.log("GAHA: ",this.client_id);
-//console.log("GAHA: ",this.client_secret);
+    this.callback_url = callback_route.getPath();
+    this.client_id = client_id;
+    this.client_secret = client_secret;
     this.logger = getLoggerFor(this);
   }
 
   public async handle(input: void): Promise<void> {
     this.issuer = await Issuer.discover('https://accounts.google.com');
-    const redirect_uris = [
-      //this.google_route + 'callback/'
-      'http://localhost:3000/.account/google/oidc/' // GAHA!
-    ];
+    const redirect_uris = [ this.callback_url ];
     try {
       this.client = new this.issuer.Client({
         client_id: this.client_id,
@@ -45,7 +39,6 @@ console.log("GAHA: ",this.google_route);
       this.logger.info('Google OIDC Client ready.');
     } catch(err) {
       this.logger.error('Google OIDC Client could not initialize.');
-console.log("GAHA: ",err);
     }
   }
 
@@ -56,7 +49,7 @@ console.log("GAHA: ",err);
   }
 
   public async getTokenSet(queries: string, code_verifier: string) {
-    const callbackUrl = this.google_route;
+    const callbackUrl = this.callback_url;
     const tokenSet = await this.client.callback(callbackUrl,queries,{ code_verifier });
     return tokenSet;
   }

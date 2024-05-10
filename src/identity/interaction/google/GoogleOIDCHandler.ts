@@ -5,10 +5,8 @@ import { JsonInteractionHandler } from '@solid/community-server';
 import type { JsonInteractionHandlerInput } from '@solid/community-server';
 import type { JsonView } from '@solid/community-server';
 import { parseSchema, validateWithError } from '@solid/community-server';
-import { AccountStore } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
-import { SOLID_HTTP } from '@solid/community-server';
 import { DataFactory } from 'n3';
 import namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
@@ -44,19 +42,13 @@ const inSchema = object({
 export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonView {
   private readonly logger = getLoggerFor(this);
 
-  private readonly accountStore: AccountStore;
   private readonly googleOIDC: GoogleOIDC;
-  private readonly googleStore: GoogleStore;
   private readonly gSessionStore: GSessionStore;
-  private readonly cookieStore: CookieStore;
 
-  public constructor(accountStore: AccountStore, googleOIDC: GoogleOIDC, googleStore: GoogleStore, gSessionStore: GSessionStore, cookieStore: CookieStore) {
+  public constructor(googleOIDC: GoogleOIDC, gSessionStore: GSessionStore) {
     super();
-    this.accountStore = accountStore;
     this.googleOIDC = googleOIDC;
-    this.googleStore = googleStore;
     this.gSessionStore = gSessionStore;
-    this.cookieStore = cookieStore;
   }
 
   public async getView(args: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
@@ -82,7 +74,6 @@ a = await fetch('http://localhost:3000/.account/google/oidc/',{method:'POST',hea
     }
 
     if (func === 'makeUrl') {
-console.log("GAHA: ******************************MMMMMMMMMMMMMMMMMMMMMM");
       const { code_verifier, code_challenge } = this.googleOIDC.createCode();
       this.gSessionStore.set(cookie,'code_verifier',code_verifier);
       this.gSessionStore.set(cookie,'stage',stage);
@@ -95,11 +86,9 @@ console.log("GAHA: ******************************MMMMMMMMMMMMMMMMMMMMMM");
       };
       json.response = this.googleOIDC.client.authorizationUrl(params);
     } else if (func === 'getStage') {
-console.log("GAHA: ******************************NNNNNNNNNNNNNNNNNNNNNNNNNN");
       const stage = await this.gSessionStore.get(cookie,'stage');
       json.response = stage ?? 'undefined';
     } else {
-console.log("GAHA: ******************************OOOOOOOOOOOOOOOOOOOOOOOOOO");
       json.response = 'error in GoogleOIDCHandler#handle.';
     }
 

@@ -10,9 +10,6 @@ import { GoogleIdRoute } from './util/GoogleIdRoute';
 import { GoogleStore } from './util/GoogleStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
 import { GSessionStore } from './util/GSessionStore';
-import { SOLID_META } from '@solid/community-server';
-import { DataFactory } from 'n3';
-import namedNode = DataFactory.namedNode;
 
 type OutType = { resource: string };
 

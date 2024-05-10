@@ -86,8 +86,6 @@ export class BaseGoogleStore extends Initializer implements GoogleStore {
   }
 
   public async authenticate(sub: string): Promise<{ accountId: string; id: string }> {
-    // ここで色々やってgoogle_subを手に入れる。認証失敗したりしたら例外を出す。
-    // とりあえず認証成功したとしてダミーを入れておく。
     const google_sub = sub;
     const payload = await this.storage.find(GOOGLE_STORAGE_TYPE, { google_sub });
     if (payload.length === 0) {

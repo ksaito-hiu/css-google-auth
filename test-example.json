@@ -22,14 +22,14 @@
           "@type": "OverrideParameters",
           "overrideValue": {
             "@type": "GoogleOIDC",
-            "c_id": "たぶん半角71文字ぐらいの最後が.apps.googleusercontent.comで終る文字列"
+            "client_id": "たぶん半角71文字ぐらいの最後が.apps.googleusercontent.comで終る文字列"
           }
         },
         {
           "@type": "OverrideParameters",
           "overrideValue": {
             "@type": "GoogleOIDC",
-            "c_secret": "たぶん半角24文字ぐらいの文字列"
+            "client_secret": "たぶん半角24文字ぐらいの文字列"
           }
         }
       ]

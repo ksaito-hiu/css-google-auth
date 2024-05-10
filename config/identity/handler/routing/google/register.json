@@ -20,7 +20,6 @@
           "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
           "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
           "googleStore": { "@id": "urn:cga:core:GoogleStore" },
-          "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
           "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
           "cookieStore": { "@id": "urn:solid-server:default:CookieStore" },
         }
