@@ -92,14 +92,14 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
     let sub = 'dummy';
     const queries = this.googleOIDC.client.callbackParams(url);
     const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
-    this.googleAuthFilter.check(tokenSet);
+    await this.googleAuthFilter.check(tokenSet);
     const claims = tokenSet.claims();
     sub = claims.sub;
     this.gSessionStore.delete(cookie,'code_verifier');
 
     const accountId = await this.accountStore.create();
     const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり
-    this.postGAccountGen.handle(accountId,googleId,tokenSet);
+    await this.postGAccountGen.handle(accountId,googleId,tokenSet);
     return { json: { accountId, remember: false }};
   }
 }
