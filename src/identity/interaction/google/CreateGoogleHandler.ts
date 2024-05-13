@@ -43,9 +43,6 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
       googleLogins[google_sub] = this.googleRoute.getPath({ accountId, googleId: id });
     }
     return { json: { ...parseSchema(inSchema), googleLogins }};
-    // let res,json;
-    // res = await fetch('http://localhost:3000/.account/account/d014c5d9-a780-494f-ac3a-10e8a821794f/login/google/');
-    // json = await res.json();
   }
 
   public async handle({ accountId, json, metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {

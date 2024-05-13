@@ -47,7 +47,7 @@
       "templates": [{
         "@id": "urn:cga:core:CreateGoogleHtml",
         "@type": "HtmlViewEntry",
-        "filePath": "templates/identity/google/create-google.html.ejs",
+        "filePath": "@cga:templates/identity/google/create-google.html.ejs",
         "route": { "@id": "urn:cga:core:AccountGoogleRoute" }
       }]
     },

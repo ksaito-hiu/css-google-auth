@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:TemplateEngine" },
+      "overrideParameters": {
+        "@type": "WaterfallHandler",
+        "handlers": [
+          {
+            "@type": "EjsTemplateEngineTemporary",
+            "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" }
+          },
+          {
+            "comment": "Template engine that supports Handlebars (HBS) templates",
+            "@type": "HandlebarsTemplateEngine",
+            "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" }
+          }
+        ]
+      }
+    }
+  ]
+}

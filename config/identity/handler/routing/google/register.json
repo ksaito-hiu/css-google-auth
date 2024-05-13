@@ -54,7 +54,7 @@
         {
           "@id": "urn:cga:core:RegisterGoogleAccountHtml",
           "@type": "HtmlViewEntry",
-          "filePath": "templates/identity/google/register-google.html.ejs",
+          "filePath": "@cga:templates/identity/google/register-google.html.ejs",
           "route": { "@id": "urn:cga:core:RegisterGoogleRoute" }
         }
       ]

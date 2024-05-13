@@ -102,7 +102,7 @@
       "templates": [{
         "@id": "urn:cga:core:GoogleOIDCHtml",
         "@type": "HtmlViewEntry",
-        "filePath": "templates/identity/google/oidc-google.html.ejs",
+        "filePath": "@cga:templates/identity/google/oidc-google.html.ejs",
         "route": { "@id": "urn:cga:core:OIDCGoogleRoute" }
       }]
     },

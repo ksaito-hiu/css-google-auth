@@ -8,7 +8,8 @@
     "cga:config/identity/handler/routing/google/create.json",
     "cga:config/identity/handler/routing/google/login.json",
     "cga:config/identity/handler/routing/google/resource.json",
-    "cga:config/identity/handler/routing/google/register.json"
+    "cga:config/identity/handler/routing/google/register.json",
+    "cga:config/identity/handler/routing/google/temporary.json"
   ],
   "@graph": [
     { "comment": "コントロールのトップ(control)にgoogleを追加",
@@ -45,6 +46,16 @@
       "@id": "urn:cga:core:GoogleIdRoute",
       "@type": "BaseGoogleIdRoute",
       "base": { "@id": "urn:solid-server:default:AccountIdRoute" }
+    },
+    {
+      "comment": "アカウントのリソース表示のページを上書き",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:AccountIdHtml" },
+      "overrideParameters": {
+        "@type": "HtmlViewEntry",
+        "filePath": "@cga:templates/identity/account/resource-google.html.ejs",
+        "route": { "@id": "urn:solid-server:default:AccountIdRoute" }
+      }
     }
   ]
 }

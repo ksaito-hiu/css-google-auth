@@ -1,5 +1,6 @@
 [
   "Omit",
-  "EmptyObject"
+  "EmptyObject",
+  "Dict"
 ]
 

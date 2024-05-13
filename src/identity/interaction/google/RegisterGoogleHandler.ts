@@ -55,12 +55,12 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
     }
     const { code_verifier, code_challenge } = this.googleOIDC.createCode();
     this.gSessionStore.set(cookie,'code_verifier',code_verifier);
-    const redirect_url = args.target; // http://localhost:3000/.account/login/google/ のはず
+    //const redirect_url = args.target;
     const params = {
       scope: 'openid email  profile',
       code_challenge,
       code_challenge_method: 'S256',
-      redirect_url
+      //redirect_url
     };
     const goToUrl = this.googleOIDC.client.authorizationUrl(params);
     return { json: { ...parseSchema(inSchema), goToUrl }};

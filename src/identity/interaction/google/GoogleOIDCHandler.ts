@@ -56,7 +56,7 @@ export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonVie
   }
 
 /*
-a = await fetch('http://localhost:3000/.account/google/oidc/',{method:'POST',headers: {'Content-Type':'application/json'},body:'{"func":"abcdefg","stage":"hijklmn"}'});
+
 */
   public async handle(args: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {
     const { func, stage } = await validateWithError(inSchema, args.json);
@@ -77,12 +77,12 @@ a = await fetch('http://localhost:3000/.account/google/oidc/',{method:'POST',hea
       const { code_verifier, code_challenge } = this.googleOIDC.createCode();
       this.gSessionStore.set(cookie,'code_verifier',code_verifier);
       this.gSessionStore.set(cookie,'stage',stage);
-      const redirect_url = args.target.path; // 'http://localhost:3000/.account/google/oidc/';
+      //const redirect_url = args.target.path;
       const params = {
         scope: 'openid email profile',
         code_challenge,
         code_challenge_method: 'S256',
-        redirect_url
+        //redirect_url
       };
       json.response = this.googleOIDC.client.authorizationUrl(params);
     } else if (func === 'getStage') {

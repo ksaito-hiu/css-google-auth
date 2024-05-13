@@ -58,7 +58,7 @@
       "templates": [{
         "@id": "urn:cga:core:GoogleLoginHtml",
         "@type": "HtmlViewEntry",
-        "filePath": "templates/identity/google/login-google.html.ejs",
+        "filePath": "@cga:templates/identity/google/login-google.html.ejs",
         "route": { "@id": "urn:cga:core:LoginGoogleRoute" }
       }]
     },

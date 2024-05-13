@@ -9,3 +9,5 @@ export * from './identity/interaction/google/util/GoogleStore';
 export * from './identity/interaction/google/util/BaseGoogleStore';
 export * from './identity/interaction/google/util/GSessionStore';
 export * from './identity/interaction/google/util/BaseGSessionStore';
+export * from './identity/interaction/google/temp/StaticAssetHandlerTemporary';
+export * from './identity/interaction/google/temp/EjsTemplateEngineTemporary';
