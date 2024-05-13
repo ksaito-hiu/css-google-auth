@@ -11,3 +11,7 @@ export * from './identity/interaction/google/util/GSessionStore';
 export * from './identity/interaction/google/util/BaseGSessionStore';
 export * from './identity/interaction/google/temp/StaticAssetHandlerTemporary';
 export * from './identity/interaction/google/temp/EjsTemplateEngineTemporary';
+export * from './identity/interaction/google/GoogleAuthFilter';
+export * from './identity/interaction/google/DefaultGoogleAuthFilter';
+export * from './identity/interaction/google/PostGAccountGen';
+export * from './identity/interaction/google/DefaultPostGAccountGen';

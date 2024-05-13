@@ -14,6 +14,8 @@ import { DataFactory } from 'n3';
 import namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
+import { GoogleAuthFilter } from './GoogleAuthFilter';
+import { PostGAccountGen } from './PostGAccountGen';
 
 const inSchema = object({
   url:string().required(),
@@ -27,6 +29,8 @@ export interface RegisterGoogleHandlerArgs {
   googleStore: GoogleStore;
   gSessionStore: GSessionStore;
   cookieStore: CookieStore;
+  googleAuthFilter: GoogleAuthFilter;
+  postGAccountGen: PostGAccountGen;
 }
 
 /**
@@ -39,12 +43,16 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
   private readonly googleOIDC: GoogleOIDC;
   private readonly googleStore: GoogleStore;
   private readonly gSessionStore: GSessionStore;
+  private readonly googleAuthFilter: GoogleAuthFilter;
+  private readonly postGAccountGen: PostGAccountGen;
 
   public constructor(args: RegisterGoogleHandlerArgs) {
     super(args.accountStore, args.cookieStore);
     this.googleOIDC = args.googleOIDC;
     this.googleStore = args.googleStore;
     this.gSessionStore = args.gSessionStore;
+    this.googleAuthFilter = args.googleAuthFilter;
+    this.postGAccountGen = args.postGAccountGen;
   }
 
   public async getView(args: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
@@ -82,19 +90,16 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
     }
 
     let sub = 'dummy';
-    try {
-      const queries = this.googleOIDC.client.callbackParams(url);
-      const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
-      const claims = tokenSet.claims();
-      sub = claims.sub;
-      this.gSessionStore.delete(cookie,'code_verifier');
-    } catch(err) {
-      console.log("RegisterGoogleHandler: err=",err);
-      throw new Error('RegisterGoogleHandler: err2');
-    }
+    const queries = this.googleOIDC.client.callbackParams(url);
+    const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
+    this.googleAuthFilter.check(tokenSet);
+    const claims = tokenSet.claims();
+    sub = claims.sub;
+    this.gSessionStore.delete(cookie,'code_verifier');
 
     const accountId = await this.accountStore.create();
     const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり
+    this.postGAccountGen.handle(accountId,googleId,tokenSet);
     return { json: { accountId, remember: false }};
   }
 }
