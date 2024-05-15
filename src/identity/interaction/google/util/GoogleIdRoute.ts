@@ -5,7 +5,7 @@ import type { ExtendedRoute } from '@solid/community-server';
 export type GoogleIdKey = 'googleId';
 
 /**
- * An {@link AccountIdRoute} that also includes a password login identifier.
+ * An {@link AccountIdRoute} that also includes a google login identifier.
  */
 export type GoogleIdRoute = ExtendedRoute<AccountIdRoute, GoogleIdKey>;
 
