@@ -8,11 +8,7 @@
       "comment": "Handles the google link details such as delete.",
       "@id": "urn:cga:core:AccountGoogleIdRouter",
       "@type": "AuthorizedRouteHandler",
-      "route": {
-        "@id": "urn:cga:core:AccountGoogleIdRoute",
-        "@type": "BaseGoogleIdRoute",
-        "base": { "@id": "urn:cga:core:AccountGoogleRoute" }
-      },
+      "route": { "@id": "urn:cga:core:GoogleIdRoute" },
       "source": {
         "@id": "urn:cga:core:GoogleResourceHandler",
         "@type": "WaterfallHandler",
@@ -22,7 +18,7 @@
             "methods": [ "DELETE" ],
             "source": {
               "@type": "DeleteGoogleHandler",
-              "googleRoute": { "@id": "urn:cga:core:AccountGoogleIdRoute" },
+              "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
               "googleStore": { "@id": "urn:cga:core:GoogleStore" }
             }
           }

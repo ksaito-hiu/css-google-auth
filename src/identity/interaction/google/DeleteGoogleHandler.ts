@@ -1,11 +1,10 @@
-//import type { EmptyObject } from '@solid/community-server';
+import type { EmptyObject } from '@solid/community-server';
 import { parsePath, verifyAccountId } from '@solid/community-server';
 import type { JsonRepresentation } from '@solid/community-server';
 import type { JsonInteractionHandlerInput } from '@solid/community-server';
 import { JsonInteractionHandler } from '@solid/community-server';
 import type { GoogleIdRoute } from './util/GoogleIdRoute';
 import type { GoogleStore } from './util/GoogleStore';
-type EmptyObject = Record<string, never>;
 
 /**
  * Handles the deletion of a Google login method.
