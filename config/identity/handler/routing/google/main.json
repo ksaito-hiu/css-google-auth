@@ -45,7 +45,7 @@
     {
       "@id": "urn:cga:core:GoogleIdRoute",
       "@type": "BaseGoogleIdRoute",
-      "base": { "@id": "urn:solid-server:default:AccountIdRoute" }
+      "base": { "@id": "urn:cga:core:AccountGoogleRoute" }
     },
     {
       "comment": "アカウントのリソース表示のページを上書き",
