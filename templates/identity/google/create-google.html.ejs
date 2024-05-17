@@ -1,12 +1,10 @@
-<h1>Create account: GOOGLE</h1>
+<h1>Register Google account</h1>
 
 <p class="error" id="error"></p>
 
-<fieldset>
-  <legend>
-    <a id="link-to-google" href="">Please click this link to be authenticated by Google.</a>
-  </legend>
-</fieldset>
+<p>To register your Google account, please press the "GOOGLE" button below.</p>
+
+<button id="google-button">GOOGLE</button>
 
 <ul class="actions">
   <li><button type="button" id="account-link">Back</button></li>
@@ -29,26 +27,25 @@
     }
     if (queries['scope']) {
       // クエリ文字列にscopeがあったらoidc-google.html.ejsからリダイレクトされて来た時と見なす
-      document.querySelector('#link-to-google').style.display = "none";
+      document.querySelector('#google-button').style.display = "none";
       try {
         const res = await postJson(controls.google.create,{ url: window.location.href });
         const json = await res.json();
         if (json.resource) {
-console.log("GAHA3: Created!");
           window.location.href = controls.html.account.account;
         } else {
-console.log("GAHA4: Not created!");
           document.querySelector('#error').textContent = json.message;
         }
       } catch(err) {
-console.log("GAHA5: ",err);
         document.querySelector('#error').textContent = "Error:";
       }
     } else {
       // それ以外は、ログイン前の状態と見なす
       const res = await postJson(controls.google.oidc,{func:'makeUrl',stage:'create'});
       const { response } = await res.json();
-      document.querySelector('#link-to-google').setAttribute('href',response);
+      document.querySelector('#google-button').addEventListener('click',(e)=>{
+        window.location.href = response;
+      });
     }
   })();
 </script>

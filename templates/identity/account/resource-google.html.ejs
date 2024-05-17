@@ -1,4 +1,4 @@
-<h1>Your account(G1)</h1>
+<h1>Your account</h1>
 <p class="error" id="error"></p>
 <div id="passwordLogins">
   <h2>Email/password logins</h2>
@@ -60,14 +60,12 @@
 
     // Update email/password entries
     const { passwordLogins } = await fetchJson(controls.password.create);
-console.log('GAHA1: ',passwordLogins);
     updateElement('createPasswordLogin', controls.password.create, { href: true });
     showAccountInfo(elements.passwordLoginEntries, passwordLogins, true, true,
       'Are you sure you want to delete this login method? This will prevent you from logging in to your account with these credentials.');
 
     // Update google OIDC entries
     const { googleLogins } = await fetchJson(controls.google.create);
-console.log('GAHA1: ',googleLogins);
     updateElement('createGoogleLogin', controls.google.create, { href: true });
     showAccountInfo(elements.googleLoginEntries, googleLogins, false, true,
       'Are you sure you want to delete this google account? This will prevent you from logging in to your account with this google account.');

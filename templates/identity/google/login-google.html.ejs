@@ -1,12 +1,10 @@
-<h1>Log in: GOOGLE</h1>
+<h1>Google Log in</h1>
 
 <p class="error" id="error"></p>
 
-<fieldset>
-  <legend>
-    <a id="link-to-google" href="">Please click this link to be authenticated by Google.</a>
-  </legend>
-</fieldset>
+<p>To log in using your Google account, please press the "GOOGLE" button below.</p>
+
+<button id="google-button">GOOGLE</button>
 
 <p class="actions">
   <button class="hidden" type="button" id="cancel">Cancel</button>
@@ -38,21 +36,17 @@
     }
     if (queries['scope']) {
       // クエリ文字列にscopeがあったらoidc-google.html.ejsからリダイレクトされて来た時と見なす
-      document.querySelector('#link-to-google').style.display = "none";
+      document.querySelector('#google-button').style.display = "none";
       try {
         const res = await postJson(controls.google.login,{ url: window.location.href });
         const json = await res.json();
-console.log("GAHA2: json=",json);
         if (json.authorization) {
           controls = await fetchControls('<%= idpIndex %>');
-console.log("GAHA3: Logged in! a=",controls.html.account.account);
           window.location.href = controls.html.account.account;
         } else {
-console.log("GAHA4: Not logged in!");
           document.querySelector('#error').textContent = json.message;
         }
       } catch(err) {
-console.log("GAHA5: ",err);
         document.querySelector('#error').textContent = "Error:";
       }
     } else {
@@ -60,7 +54,9 @@ console.log("GAHA5: ",err);
       document.querySelector('#google-login-link').style.display = "none";
       const res = await postJson(controls.google.oidc,{func:'makeUrl',stage:'login'});
       const { response } = await res.json();
-      document.querySelector('#link-to-google').setAttribute('href',response);
+      document.querySelector('#google-button').addEventListener('click',(e)=>{
+        window.location.href = response;
+      });
     }
   })();
 </script>
