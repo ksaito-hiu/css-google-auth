@@ -42,7 +42,12 @@
         const json = await res.json();
         if (json.authorization) {
           controls = await fetchControls('<%= idpIndex %>');
-          window.location.href = controls.html.account.account;
+          if (<%= authenticating %>) { // if there is an OIDC interaction
+            const res2 = await postJson(controls.oidc.prompt); // 次の処理を自動で判別
+            window.location.href = res2.location;
+          } else {
+            window.location.href = controls.html.account.account;
+          }
         } else {
           document.querySelector('#error').textContent = json.message;
         }
