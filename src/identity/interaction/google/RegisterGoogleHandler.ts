@@ -89,12 +89,11 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
       throw new Error('GoogleLoginHandler: no data of code_verifier.');
     }
 
-    let sub = 'dummy';
     const queries = this.googleOIDC.client.callbackParams(url);
     const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
     await this.googleAuthFilter.check(tokenSet);
     const claims = tokenSet.claims();
-    sub = claims.sub;
+    const sub = claims.sub;
     this.gSessionStore.delete(cookie,'code_verifier');
 
     const accountId = await this.accountStore.create();

@@ -56,6 +56,16 @@
         "filePath": "@cga:templates/identity/account/resource-google.html.ejs",
         "route": { "@id": "urn:solid-server:default:AccountIdRoute" }
       }
+    },
+    {
+      "comment": "Googleアカウントのフィルタ",
+      "@id": "urn:cga:core:GoogleAuthFilter",
+      "@type": "DefaultGoogleAuthFilter"
+    },
+    {
+      "comment": "Googleアカウント追加後の処理",
+      "@id": "urn:cga:core:PostGAccountGen",
+      "@type": "DefaultPostGAccountGen"
     }
   ]
 }

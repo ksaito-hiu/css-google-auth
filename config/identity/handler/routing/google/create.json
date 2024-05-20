@@ -22,7 +22,9 @@
           "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
           "googleStore": { "@id": "urn:cga:core:GoogleStore" },
           "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
-          "gSessionStore": { "@id": "urn:cga:core:GSessionStore" }
+          "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
+          "googleAuthFilter": { "@id": "urn:cga:core:GoogleAuthFilter" },
+          "postGAccountGen": { "@id": "urn:cga:core:PostGAccountGen" }
         }
       }
     },

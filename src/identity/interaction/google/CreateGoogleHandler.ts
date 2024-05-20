@@ -10,12 +10,23 @@ import { GoogleIdRoute } from './util/GoogleIdRoute';
 import { GoogleStore } from './util/GoogleStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
 import { GSessionStore } from './util/GSessionStore';
+import { GoogleAuthFilter } from './GoogleAuthFilter';
+import { PostGAccountGen } from './PostGAccountGen';
 
 type OutType = { resource: string };
 
 const inSchema = object({
   url: string().required(),
 });
+
+export interface CreateGoogleHandlerArgs {
+  googleOIDC: GoogleOIDC;
+  googleStore: GoogleStore;
+  googleRoute: GoogleIdRoute;
+  gSessionStore: GSessionStore;
+  googleAuthFilter: GoogleAuthFilter;
+  postGAccountGen: PostGAccountGen;
+}
 
 /**
  * 
@@ -27,13 +38,17 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
   private readonly googleStore: GoogleStore;
   private readonly googleRoute: GoogleIdRoute;
   private readonly gSessionStore: GSessionStore;
+  private readonly googleAuthFilter: GoogleAuthFilter;
+  private readonly postGAccountGen: PostGAccountGen;
 
-  public constructor(googleOIDC: GoogleOIDC, googleStore: GoogleStore, googleRoute: GoogleIdRoute, gSessionStore: GSessionStore) {
+  public constructor(args: CreateGoogleHandlerArgs) {
     super();
-    this.googleOIDC = googleOIDC;
-    this.googleStore = googleStore;
-    this.googleRoute = googleRoute;
-    this.gSessionStore = gSessionStore;
+    this.googleOIDC = args.googleOIDC;
+    this.googleStore = args.googleStore;
+    this.googleRoute = args.googleRoute;
+    this.gSessionStore = args.gSessionStore;
+    this.googleAuthFilter = args.googleAuthFilter;
+    this.postGAccountGen = args.postGAccountGen;
   }
 
   public async getView({ accountId, json, metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
@@ -58,18 +73,15 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
       throw new Error('GoogleLoginHandler: no data of code_verifier.');
     }
 
-    let sub = 'dummy';
-    try {
-      const queries = this.googleOIDC.client.callbackParams(url);
-      const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
-      const claims = tokenSet.claims();
-      sub = claims.sub;
-      this.gSessionStore.delete(cookie,'code_verifier');
-    } catch(err) {
-      console.log("GoogleLoginHandler: err=",err);
-    }
+    const queries = this.googleOIDC.client.callbackParams(url);
+    const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
+    await this.googleAuthFilter.check(tokenSet);
+    const claims = tokenSet.claims();
+    const sub = claims.sub;
+    this.gSessionStore.delete(cookie,'code_verifier');
 
     const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり
+    await this.postGAccountGen.handle(accountId,googleId,tokenSet);
     const resource = this.googleRoute.getPath({ googleId, accountId });
 
     return { json: { resource }};

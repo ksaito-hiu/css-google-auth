@@ -22,14 +22,8 @@
           "googleStore": { "@id": "urn:cga:core:GoogleStore" },
           "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
           "cookieStore": { "@id": "urn:solid-server:default:CookieStore" },
-          "googleAuthFilter": {
-            "@id": "urn:cga:core:GoogleAuthFilter",
-            "@type": "DefaultGoogleAuthFilter"
-          },
-          "postGAccountGen": {
-            "@id": "urn:cga:core:PostGAccountGen",
-            "@type": "DefaultPostGAccountGen"
-          },
+          "googleAuthFilter": { "@id": "urn:cga:core:GoogleAuthFilter" },
+          "postGAccountGen": { "@id": "urn:cga:core:PostGAccountGen" }
         }
       }
     },
