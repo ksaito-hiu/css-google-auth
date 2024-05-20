@@ -1,6 +1,6 @@
 {
   "name": "css-google-auth",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Components for Google authentication in CommunitySolidServer.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,8 +46,8 @@
   "devDependencies": {
     "@solid/community-server": "^7.0.5",
     "@tsconfig/node18": "^18.2.3",
-    "componentsjs-generator": "^4.0.1",
+    "componentsjs-generator": "^3.1.2",
     "openid-client": "^5.6.5",
-    "typescript": "^5.4.3"
+    "typescript": "5.1.6"
   }
 }
