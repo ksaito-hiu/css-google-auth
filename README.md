@@ -26,22 +26,11 @@ Then create a directory for your project. And create a file named `google-auth.j
       "@id": "urn:cga:core:MyOverride1",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:cga:core:GoogleOIDC" },
-      "overrideSteps": [
-        {
-          "@type": "OverrideParameters",
-          "overrideValue": {
-            "@type": "GoogleOIDC",
-            "client_id": "Maybe a string that has 71 characters, and ends with apps.googleusercontent.com ."
-          }
-        },
-        {
-          "@type": "OverrideParameters",
-          "overrideValue": {
-            "@type": "GoogleOIDC",
-            "client_secret": "Maybe a string that has 24 characters."
-          }
-        }
-      ]
+      "overrideParameters": {
+        "@type": "GoogleOIDC",
+        "client_id": "Maybe a string that has 71 characters, and ends with apps.googleusercontent.com .",
+        "client_secret": "Maybe a string that has 24 characters."
+      }
     }
   ]
 }
