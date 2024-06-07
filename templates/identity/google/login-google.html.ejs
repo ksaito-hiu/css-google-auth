@@ -43,9 +43,12 @@
         if (json.authorization) {
           controls = await fetchControls('<%= idpIndex %>');
           if (<%= authenticating %>) { // if there is an OIDC interaction
-            //const res2 = await postJson(controls.oidc.prompt); // 次の処理を自動で判別
-            const res2 = await postJson(controls.oidc.consent); // OIDCインタラクションの終了?
-            window.location.href = res2.location;
+            ////const theUrl = controls.oidc.prompt; // 次の処理を自動で判別
+            //const theUrl = controls.oidc.consent; // OIDCインタラクションの終了?
+            //const res2 = await fetch(theUrl,{method: 'POST'});
+            //const json2 = await res2.json();
+            //window.location.href = json2.location;
+            window.location.href = '/.account/oidc/consent/' // 本当は上の方法でやりたいんだけど、うまくいかない。
           } else {
             window.location.href = controls.html.account.account;
           }
