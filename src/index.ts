@@ -15,3 +15,4 @@ export * from './identity/interaction/google/GoogleAuthFilter';
 export * from './identity/interaction/google/DefaultGoogleAuthFilter';
 export * from './identity/interaction/google/PostGAccountGen';
 export * from './identity/interaction/google/DefaultPostGAccountGen';
+export * from './identity/interaction/google/util/RegExpAuthFilter';
