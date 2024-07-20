@@ -47,8 +47,9 @@
             //const theUrl = controls.oidc.consent; // OIDCインタラクションの終了?
             //const res2 = await fetch(theUrl,{method: 'POST'});
             //const json2 = await res2.json();
-            //window.location.href = json2.location;
-            window.location.href = '/.account/oidc/consent/' // 本当は上の方法でやりたいんだけど、うまくいかない。
+            //window.location.href = json2.location; // これが正解だと思ってた
+            window.location.href = controls.oidc.consent; // これだけで上手くいくみたい('/.account/oidc/consent/')
+
           } else {
             window.location.href = controls.html.account.account;
           }
