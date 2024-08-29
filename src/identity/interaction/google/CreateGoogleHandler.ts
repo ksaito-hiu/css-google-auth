@@ -26,6 +26,7 @@ export interface CreateGoogleHandlerArgs {
   gSessionStore: GSessionStore;
   googleAuthFilter: GoogleAuthFilter;
   postGAccountGen: PostGAccountGen;
+  addDelLinks: boolean;
 }
 
 /**
@@ -40,6 +41,7 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
   private readonly gSessionStore: GSessionStore;
   private readonly googleAuthFilter: GoogleAuthFilter;
   private readonly postGAccountGen: PostGAccountGen;
+  private readonly addDelLinks: boolean;
 
   public constructor(args: CreateGoogleHandlerArgs) {
     super();
@@ -49,6 +51,7 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
     this.gSessionStore = args.gSessionStore;
     this.googleAuthFilter = args.googleAuthFilter;
     this.postGAccountGen = args.postGAccountGen;
+    this.addDelLinks = args.addDelLinks;
   }
 
   public async getView({ accountId, json, metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
@@ -57,7 +60,8 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
     for (const { id, google_sub } of await this.googleStore.findByAccount(accountId)) {
       googleLogins[google_sub] = this.googleRoute.getPath({ accountId, googleId: id });
     }
-    return { json: { ...parseSchema(inSchema), googleLogins }};
+    const addDelLinks = this.addDelLinks;
+    return { json: { ...parseSchema(inSchema), googleLogins, addDelLinks }};
   }
 
   public async handle({ accountId, json, metadata }: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {

@@ -24,7 +24,8 @@
           "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
           "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
           "googleAuthFilter": { "@id": "urn:cga:core:GoogleAuthFilter" },
-          "postGAccountGen": { "@id": "urn:cga:core:PostGAccountGen" }
+          "postGAccountGen": { "@id": "urn:cga:core:PostGAccountGen" },
+          "addDelLinks": true
         }
       }
     },

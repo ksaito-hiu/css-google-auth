@@ -84,6 +84,7 @@ export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonVie
         code_challenge_method: 'S256',
         //redirect_url
       };
+console.log("GAHA2.2, GoogleOIDCHandler, this.googleOIDC.client=",this.googleOIDC.client);
       json.response = this.googleOIDC.client.authorizationUrl(params);
     } else if (func === 'getStage') {
       const stage = await this.gSessionStore.get(cookie,'stage');

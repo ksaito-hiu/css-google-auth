@@ -20,14 +20,18 @@ export class GoogleOIDC extends Initializer {
 
   public constructor(callback_route: InteractionRoute, client_id: string, client_secret: string) {
     super();
+console.log("GAHA0: *******************************");
     this.callback_url = callback_route.getPath();
     this.client_id = client_id;
     this.client_secret = client_secret;
     this.logger = getLoggerFor(this);
+console.log("GAHA0-1: *******************************");
   }
 
   public async handle(input: void): Promise<void> {
+console.log("GAHA1: ");
     this.issuer = await Issuer.discover('https://accounts.google.com');
+console.log("GAHA2: ");
     const redirect_uris = [ this.callback_url ];
     try {
       this.client = new this.issuer.Client({
@@ -36,8 +40,11 @@ export class GoogleOIDC extends Initializer {
         redirect_uris,
         response_types: ['code'],
       });
+console.log("GAHA3: ");
       this.logger.info('Google OIDC Client ready.');
+console.log("GAHA4: ");
     } catch(err) {
+console.log("GAHA5: ");
       this.logger.error('Google OIDC Client could not initialize.');
     }
   }

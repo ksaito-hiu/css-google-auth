@@ -5,7 +5,10 @@
   ],
   "@graph": [
     {
-      "comment": "Handles the google link details such as delete.",
+      "comment": [
+        "Handles the google link details such as delete.",
+        "実際にはDELETEをするAPIの設定"
+      ],
       "@id": "urn:cga:core:AccountGoogleIdRouter",
       "@type": "AuthorizedRouteHandler",
       "route": { "@id": "urn:cga:core:GoogleIdRoute" },

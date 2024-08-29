@@ -1,0 +1,15 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "cga:config/identity/handler/routing/google/main.json",
+    "cga:config/identity/handler/routing/google/google-oidc.json",
+    "cga:config/identity/handler/routing/google/create.json",
+    "cga:config/identity/handler/routing/google/login.json",
+    "cga:config/identity/handler/routing/google/resource.json",
+    "cga:config/identity/handler/routing/google/register.json",
+    "cga:config/identity/handler/routing/google/temporary.json"
+  ]
+}
