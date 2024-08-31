@@ -28,15 +28,7 @@
     },
 
     {
-      "comment": "Initialize the google session store. Also necessary on primary thread for pod seeding.",
-      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
-      "@type": "ParallelHandler",
-      "handlers": [
-        { "@id": "urn:cga:core:GoogleStore" }
-      ]
-    },
-    {
-      "comment": "Initialize the google session store.",
+      "comment": "Initialize the google store.",
       "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
       "@type": "ParallelHandler",
       "handlers": [

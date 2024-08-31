@@ -47,7 +47,7 @@
       "client_secret": "this parameter will be overrided by test.json."
     },
     {
-      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
+      "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
       "@type": "ParallelHandler",
       "handlers": [
         { "@id" : "urn:cga:core:GoogleOIDC" }

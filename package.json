@@ -1,6 +1,6 @@
 {
   "name": "css-google-auth",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Components for Google authentication in CommunitySolidServer.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
