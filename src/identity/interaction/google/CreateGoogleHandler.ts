@@ -85,7 +85,7 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
     this.gSessionStore.delete(cookie,'code_verifier');
 
     const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり
-    await this.postGAccountGen.handle(accountId,googleId,tokenSet);
+    await this.postGAccountGen.handle(accountId,sub,tokenSet);
     const resource = this.googleRoute.getPath({ googleId, accountId });
 
     return { json: { resource }};
