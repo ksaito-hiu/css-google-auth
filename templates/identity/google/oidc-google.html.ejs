@@ -46,6 +46,9 @@ console.log("GAHA4: redirect=",(controls.html.google.create + window.location.se
       } else if (response === 'register') {
 console.log("GAHA5: redirect=",(controls.html.google.register + window.location.search));
         window.location.href = controls.html.google.register + window.location.search;
+      } else if (response === 'sub') {
+console.log("GAHA5: redirect=",(controls.html.google.sub + window.location.search));
+        window.location.href = controls.html.google.sub + window.location.search;
       } else {
         document.querySelector('#error').textContent = "Error: you are in strange stage:"+response;
       }

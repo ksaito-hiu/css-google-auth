@@ -10,6 +10,7 @@
     "cga:config/identity/handler/routing/google/login.json",
     "cga:config/identity/handler/routing/google/resource.json",
     "cga:config/identity/handler/routing/google/register.json",
+    "cga:config/identity/handler/routing/google/sub.json",
     "cga:config/identity/handler/routing/google/temporary.json"
   ]
 }

@@ -1,0 +1,67 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^2.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": "GoogleのOIDCで管理されているsubをGoogleから得るためのSubGoogleHandlerのための設定"
+    },
+
+    {
+      "comment": "SubGoogleHandlerの生成とルーティングの設定。",
+      "@id": "urn:cga:core:SubGoogleRouter",
+      "@type": "InteractionRouteHandler",
+      "route": {
+        "@id": "urn:cga:core:SubGoogleRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": { "@id": "urn:cga:core:GoogleRoute" },
+        "relativePath": "sub/"
+      },
+      "source": {
+        "@type": "ViewInteractionHandler",
+        "source": {
+          "comment": "SubGoogleHandlerのインスタンス",
+          "@id": "urn:cga:core:SubGoogleHandler",
+          "@type": "SubGoogleHandler",
+          "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
+          "gSessionStore": { "@id": "urn:cga:core:GSessionStore" }
+        }
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [{ "@id": "urn:cga:core:SubGoogleRouter" }]
+    },
+    { "comment": "Adding the necessary controls(googleコントロールの中にsubを追加する)",
+      "@id": "urn:cga:core:GoogleControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "sub",
+        "ControlHandler:_controls_value": { "@id": "urn:cga:core:SubGoogleRoute" }
+      }]
+    },
+    {
+      "comment": "SubGoogleのためのテンプレート。",
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:cga:core:SubgoogleHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "@cga:templates/identity/google/sub-google.html.ejs",
+        "route": { "@id": "urn:cga:core:SubGoogleRoute" }
+      }]
+    },
+    { "comment": "Adding HTML(sub-googleのHTMLをコントロールのHTMLの所に追加)",
+      "ControlHandler:_controls_value": {
+        "@id": "urn:cga:core:GoogleHtmlControlHandler",
+        "@type": "ControlHandler",
+        "controls": [{
+          "ControlHandler:_controls_key": "sub",
+          "ControlHandler:_controls_value": { "@id": "urn:cga:core:SubGoogleRoute" }
+        }]
+      }
+    }
+  ]
+}

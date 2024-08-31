@@ -1,0 +1,51 @@
+<h1>Get Google Sub</h1>
+
+<p class="error" id="error"></p>
+
+<p>To get your Google Sub Information, please press the "GOOGLE" button below.</p>
+
+<button id="google-button">GOOGLE</button>
+
+<ul class="actions">
+  <li><button type="button" id="account-link">Back</button></li>
+</ul>
+
+<script>
+  (async() => {
+    let res = await fetch('<%= idpIndex %>', { headers: { accept: 'application/json' } });
+
+    const { controls } = await res.json();
+    setRedirectClick('account-link', controls.html.main.login);
+
+    const queryStr = window.location.search.slice(1);
+    const queries = {};
+    if (queryStr) {
+      queryStr.split('&').forEach((kv)=>{
+        const [k,v] = kv.split('=');
+        queries[k] = v;
+      });
+    }
+    if (queries['scope']) {
+      // クエリ文字列にscopeがあったらoidc-google.html.ejsからリダイレクトされて来た時と見なす
+      document.querySelector('#google-button').style.display = "none";
+      try {
+        const res = await postJson(controls.google.sub,{ url: window.location.href });
+        const json = await res.json();
+        if (json.sub) {
+          document.querySelector('#error').textContent = "sub: "+json.sub
+        } else {
+          document.querySelector('#error').textContent = json.message;
+        }
+      } catch(err) {
+        document.querySelector('#error').textContent = "Error:";
+      }
+    } else {
+      // それ以外は、問合せ前の状態と見なす
+      const res = await postJson(controls.google.oidc,{func:'makeUrl',stage:'sub'});
+      const { response } = await res.json();
+      document.querySelector('#google-button').addEventListener('click',(e)=>{
+        window.location.href = response;
+      });
+    }
+  })();
+</script>

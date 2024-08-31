@@ -22,7 +22,7 @@ const inSchema = object({
 
 /**
  * GoogleのOIDCを処理するためのAPI。ただ、すべてをここに集約することはできなくて、
- * Google認証が通たかどうかの判定はGoogleLoginHandlerやCreateGoogleHandler内で
+ * Google認証が通ったかどうかの判定はGoogleLoginHandlerやCreateGoogleHandler内で
  * 行わないといけない。このGoogleOIDCHandlerの機能は以下の2つ。
  * 
  * 機能1: 無ければcga-cookieを設定し、このCookieにひもづけてGoogle認証の正当性を
@@ -84,7 +84,6 @@ export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonVie
         code_challenge_method: 'S256',
         //redirect_url
       };
-console.log("GAHA2.2, GoogleOIDCHandler, this.googleOIDC.client=",this.googleOIDC.client);
       json.response = this.googleOIDC.client.authorizationUrl(params);
     } else if (func === 'getStage') {
       const stage = await this.gSessionStore.get(cookie,'stage');

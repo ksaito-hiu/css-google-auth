@@ -74,7 +74,7 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
     }
     const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
     if (!code_verifier) {
-      throw new Error('GoogleLoginHandler: no data of code_verifier.');
+      throw new Error('CreateGoogleHandler: no data of code_verifier.');
     }
 
     const queries = this.googleOIDC.client.callbackParams(url);
