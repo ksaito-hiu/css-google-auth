@@ -98,7 +98,7 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
 
     const accountId = await this.accountStore.create();
     const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり
-    await this.postGAccountGen.handle(accountId,googleId,tokenSet);
+    await this.postGAccountGen.handle(accountId,sub,tokenSet);
     return { json: { accountId, remember: false }};
   }
 }
