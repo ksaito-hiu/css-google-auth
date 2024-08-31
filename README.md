@@ -66,5 +66,5 @@ you can use following 2 interfaces.
 * PostGAccountGen
     + If you need to execute some processes after adding
       google authentication login, you can implement
-      this interface, and exchange DefaultGoogleAuthFilter
+      this interface, and exchange DefaultPostGAccountGen
       to your implementation.
