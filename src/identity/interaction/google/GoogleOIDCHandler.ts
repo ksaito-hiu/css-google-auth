@@ -82,6 +82,7 @@ export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonVie
         scope: 'openid email profile',
         code_challenge,
         code_challenge_method: 'S256',
+        prompt: 'select_account',
         //redirect_url
       };
       json.response = this.googleOIDC.client.authorizationUrl(params);

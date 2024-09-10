@@ -68,6 +68,7 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
       scope: 'openid email  profile',
       code_challenge,
       code_challenge_method: 'S256',
+      prompt: 'select_account',
       //redirect_url
     };
     const goToUrl = this.googleOIDC.client.authorizationUrl(params);
