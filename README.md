@@ -6,7 +6,7 @@ Components for Google authentication in CommunitySolidServer.
 
 At first, setup OAuth 2.0 at Google API Console.
 
-* Google API Console: <https://console.developers.google.com/>
+* Google API Console: <https://console.cloud.google.com/apis/credentials>
 * Documents of Google OpenID Connect: <https://developers.google.com/identity/openid-connect/openid-connect>
 
 The redirect uri should be `${Root of CommunitySolidServer}/.account/google/oidc/`.
