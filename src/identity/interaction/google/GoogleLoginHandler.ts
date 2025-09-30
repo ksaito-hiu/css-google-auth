@@ -1,5 +1,5 @@
 import { object, string } from 'yup';
-import { getLoggerFor } from '@solid/community-server';
+import { getLoggerFor } from 'global-logger-factory';
 import type { AccountStore } from '@solid/community-server';
 import type { CookieStore } from '@solid/community-server';
 import type { JsonRepresentation } from '@solid/community-server';
@@ -10,7 +10,7 @@ import { ResolveLoginHandler } from '@solid/community-server';
 import { parseSchema, URL_SCHEMA, validateWithError } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
 import { DataFactory } from 'n3';
-import namedNode = DataFactory.namedNode;
+const namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
 import { SOLID_HTTP } from '@solid/community-server';
@@ -62,7 +62,7 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
       prompt: 'select_account',
       //redirect_url
     };
-    const goToUrl = this.googleOIDC.client.authorizationUrl(params);
+    const goToUrl = this.googleOIDC.myClient.authorizationUrl(params);
     return { json: { ...parseSchema(inSchema), goToUrl }};
   }
 
@@ -83,7 +83,7 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
 
     let sub = 'dummy';
     try {
-      const queries = this.googleOIDC.client.callbackParams(url);
+      const queries = this.googleOIDC.myClient.callbackParams(url);
       const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
       const claims = tokenSet.claims();
       sub = claims.sub;

@@ -1,5 +1,5 @@
 import { Initializer } from '@solid/community-server';
-import { getLoggerFor } from '@solid/community-server';
+import { getLoggerFor } from 'global-logger-factory';
 import { BadRequestHttpError } from '@solid/community-server';
 import { createErrorMessage } from '@solid/community-server';
 import { ForbiddenHttpError } from '@solid/community-server';

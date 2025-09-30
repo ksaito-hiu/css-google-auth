@@ -1,5 +1,5 @@
 import { object, string } from 'yup';
-import { getLoggerFor } from '@solid/community-server';
+import { getLoggerFor } from 'global-logger-factory';
 import type { JsonRepresentation } from '@solid/community-server';
 import { JsonInteractionHandler } from '@solid/community-server';
 import type { JsonInteractionHandlerInput } from '@solid/community-server';
@@ -8,7 +8,7 @@ import { parseSchema, validateWithError } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
 import { DataFactory } from 'n3';
-import namedNode = DataFactory.namedNode;
+const namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
 import { CookieStore } from '@solid/community-server';
 import { v4 } from 'uuid';
@@ -85,7 +85,7 @@ export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonVie
         prompt: 'select_account',
         //redirect_url
       };
-      json.response = this.googleOIDC.client.authorizationUrl(params);
+      json.response = this.googleOIDC.myClient.authorizationUrl(params);
     } else if (func === 'getStage') {
       const stage = await this.gSessionStore.get(cookie,'stage');
       json.response = stage ?? 'undefined';

@@ -1,5 +1,5 @@
 import { object, string } from 'yup';
-import { getLoggerFor } from '@solid/community-server';
+import { getLoggerFor } from 'global-logger-factory';
 import type { JsonRepresentation } from '@solid/community-server';
 import { JsonInteractionHandler } from '@solid/community-server';
 import type { JsonInteractionHandlerInput } from '@solid/community-server';
@@ -48,7 +48,7 @@ export class SubGoogleHandler extends JsonInteractionHandler implements JsonView
       throw new Error('SubGoogleHandler: no data of code_verifier.');
     }
 
-    const queries = this.googleOIDC.client.callbackParams(url);
+    const queries = this.googleOIDC.myClient.callbackParams(url);
     const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
     const claims = tokenSet.claims();
     const sub = claims.sub;

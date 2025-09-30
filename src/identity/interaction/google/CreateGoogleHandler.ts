@@ -1,5 +1,5 @@
 import { object, string } from 'yup';
-import { getLoggerFor } from '@solid/community-server';
+import { getLoggerFor } from 'global-logger-factory';
 import { assertAccountId } from '@solid/community-server';
 import type { JsonRepresentation } from '@solid/community-server';
 import { JsonInteractionHandler } from '@solid/community-server';
@@ -77,7 +77,7 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
       throw new Error('CreateGoogleHandler: no data of code_verifier.');
     }
 
-    const queries = this.googleOIDC.client.callbackParams(url);
+    const queries = this.googleOIDC.myClient.callbackParams(url);
     const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
     await this.googleAuthFilter.check(tokenSet);
     const claims = tokenSet.claims();

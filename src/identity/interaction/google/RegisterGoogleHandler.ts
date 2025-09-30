@@ -1,5 +1,5 @@
 import { object, string } from 'yup';
-import { getLoggerFor } from '@solid/community-server';
+import { getLoggerFor } from 'global-logger-factory';
 import type { AccountStore } from '@solid/community-server';
 import type { CookieStore } from '@solid/community-server';
 import type { JsonRepresentation } from '@solid/community-server';
@@ -11,7 +11,7 @@ import { parseSchema, validateWithError } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
 import { SOLID_META } from '@solid/community-server';
 import { DataFactory } from 'n3';
-import namedNode = DataFactory.namedNode;
+const namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
 import { GoogleAuthFilter } from './GoogleAuthFilter';
@@ -71,7 +71,7 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
       prompt: 'select_account',
       //redirect_url
     };
-    const goToUrl = this.googleOIDC.client.authorizationUrl(params);
+    const goToUrl = this.googleOIDC.myClient.authorizationUrl(params);
     return { json: { ...parseSchema(inSchema), goToUrl }};
   }
 
@@ -90,7 +90,7 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
       throw new Error('GoogleLoginHandler: no data of code_verifier.');
     }
 
-    const queries = this.googleOIDC.client.callbackParams(url);
+    const queries = this.googleOIDC.myClient.callbackParams(url);
     const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
     await this.googleAuthFilter.check(tokenSet);
     const claims = tokenSet.claims();
