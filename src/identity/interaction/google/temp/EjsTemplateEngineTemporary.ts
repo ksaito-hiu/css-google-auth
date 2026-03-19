@@ -16,6 +16,7 @@ export class EjsTemplateEngineTemporary<T extends Dict<unknown> = Dict<unknown>>
 
   public constructor(baseUrl: string, supportedExtensions = [ 'ejs' ]) {
     super(baseUrl, supportedExtensions);
+console.log(`GAHA: 9999999999999999999999`);
     this.myBaseUrl = baseUrl;
   }
   public async handle({ contents, template }: TemplateEngineInput<T>): Promise<string> {

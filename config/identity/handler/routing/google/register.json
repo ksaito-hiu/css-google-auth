@@ -1,7 +1,7 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^2.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^8.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^3.0.0/components/context.jsonld"
   ],
   "@graph": [
     {
@@ -29,7 +29,7 @@
     },
     {
       "@id": "urn:solid-server:default:InteractionRouteHandler",
-      "@type": "WaterfallHandler",
+      "@type": "StatusWaterfallHandler",
       "handlers": [{ "@id": "urn:cga:core:RegisterGoogleRouter" }]
     },
     { "comment": "Adding the necessary controls(googleコントロールの中にregisterを追加する)",

@@ -1,7 +1,7 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^2.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^8.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^3.0.0/components/context.jsonld"
   ],
   "@graph": [
     {
@@ -25,15 +25,6 @@
           "source": { "@id": "urn:solid-server:default:KeyValueStorage" }
         }
       }
-    },
-
-    {
-      "comment": "Initialize the google store.",
-      "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
-      "@type": "ParallelHandler",
-      "handlers": [
-        { "@id": "urn:cga:core:GoogleStore" }
-      ]
     }
   ]
 }

@@ -19,7 +19,7 @@
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r cga",
     "build:ts": "tsc",
     "prepare": "npm run build",
-    "test": "community-solid-server -c @css:config/oidc.json test.json -f data -m .",
+    "test": "community-solid-server -c @css:config/oidc.json cga-config.json -f data -m .",
     "clean": "rm -fr node_modules; rm -fr data; rm -fr dist"
   },
   "files": [
@@ -44,12 +44,12 @@
   },
   "homepage": "https://github.com/ksaito-hiu/css-google-auth#readme",
   "dependencies": {
-    "@solid/community-server": "^8.0.0-alpha.1",
-    "openid-client": "^6.8.1"
+    "@solid/community-server": "^8.0.0-alpha.3",
+    "openid-client": "^6.8.2"
   },
   "devDependencies": {
-    "@tsconfig/node20": "^20.1.6",
+    "@tsconfig/node20": "^20.1.9",
     "componentsjs-generator": "^4.3.0",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   }
 }

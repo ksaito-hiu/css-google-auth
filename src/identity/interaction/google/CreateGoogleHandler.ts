@@ -76,13 +76,17 @@ export class CreateGoogleHandler extends JsonInteractionHandler<OutType> impleme
     if (!code_verifier) {
       throw new Error('CreateGoogleHandler: no data of code_verifier.');
     }
-
-    const queries = this.googleOIDC.myClient.callbackParams(url);
-    const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
+    const nonce = await this.gSessionStore.get(cookie,'nonce');
+    if (!nonce) {
+      throw new Error('CreateGoogleHandler: no data of nonce.');
+    }
+    const queries = '';
+    const tokenSet = await this.googleOIDC.getTokenSet(url,queries,code_verifier,nonce);
     await this.googleAuthFilter.check(tokenSet);
     const claims = tokenSet.claims();
-    const sub = claims.sub;
+    const sub = claims!.sub;
     this.gSessionStore.delete(cookie,'code_verifier');
+    this.gSessionStore.delete(cookie,'nonce');
 
     const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり
     await this.postGAccountGen.handle(accountId,sub,tokenSet);

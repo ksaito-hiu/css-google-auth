@@ -48,21 +48,15 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
 
   public async getView(args: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
     const { accountId, json, metadata } = args;
+    const { url } = await validateWithError(inSchema, json);
     const cookie = metadata.get(SOLID_HTTP.terms.accountCookie)?.value;
     if (!cookie) {
       throw new Error('GoogleLoginHandler: no cookie.');
     }
-    const { code_verifier, code_challenge } = this.googleOIDC.createCode();
+    const { code_verifier, code_challenge, nonce } = await this.googleOIDC.createCodeAndNonce();
     this.gSessionStore.set(cookie,'code_verifier',code_verifier);
-    //const redirect_url = args.target;
-    const params = {
-      scope: 'openid email  profile',
-      code_challenge,
-      code_challenge_method: 'S256',
-      prompt: 'select_account',
-      //redirect_url
-    };
-    const goToUrl = this.googleOIDC.myClient.authorizationUrl(params);
+    this.gSessionStore.set(cookie,'nonce',nonce);
+    const goToUrl = this.googleOIDC.createAuthUrl(url, code_challenge, nonce).href;
     return { json: { ...parseSchema(inSchema), goToUrl }};
   }
 
@@ -80,14 +74,19 @@ export class GoogleLoginHandler extends ResolveLoginHandler implements JsonView 
     if (!code_verifier) {
       throw new Error('GoogleLoginHandler: no data of code_verifier.');
     }
+    const nonce = await this.gSessionStore.get(cookie,'nonce');
+    if (!nonce) {
+      throw new Error('GoogleLoginHandler: no data of nonce.');
+    }
 
     let sub = 'dummy';
     try {
-      const queries = this.googleOIDC.myClient.callbackParams(url);
-      const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
+      const queries = '';
+      const tokenSet = await this.googleOIDC.getTokenSet(url,queries,code_verifier,nonce);
       const claims = tokenSet.claims();
-      sub = claims.sub;
+      sub = claims!.sub;
       this.gSessionStore.delete(cookie,'code_verifier');
+      this.gSessionStore.delete(cookie,'nonce');
     } catch(err) {
       console.log("GoogleLoginHandler: err=",err);
     }

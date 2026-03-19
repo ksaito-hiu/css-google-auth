@@ -18,9 +18,20 @@ type OutType = { response: string };
 const inSchema = object({
   func: string().trim().min(1).required(),
   stage: string().trim().min(1).required(),
+  redirectURL: string().trim().min(1).required(),
 });
 
 /**
+ * 2025,10/06: openid-clientのv6を良く調べたら認証URLを作る時に
+ * redirect_urlを自由に設定できることがわかった。(昔からできたんだとは思うけど。)
+ * なので、これを活用して仕組みを簡単化することにする。まず、GoogleOIDC.tsの方は
+ * openid-clientを使ってcss-google-authに最低限必要な機能を簡単に利用するためだけの
+ * APIにして、このGoogleOIDCHandlerは、単にそれを呼び出せるだけのJSON APIを提供する
+ * だけのラッパーのようにする予定。以下の文章は前の物だけど、まだ完成してないので
+ * 残しておく。
+ * 
+ * まだ道は長いぞ。
+ *******************************************************************************
  * GoogleのOIDCを処理するためのAPI。ただ、すべてをここに集約することはできなくて、
  * Google認証が通ったかどうかの判定はGoogleLoginHandlerやCreateGoogleHandler内で
  * 行わないといけない。このGoogleOIDCHandlerの機能は以下の2つ。
@@ -59,7 +70,7 @@ export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonVie
 
 */
   public async handle(args: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {
-    const { func, stage } = await validateWithError(inSchema, args.json);
+    const { func, stage, redirectURL } = await validateWithError(inSchema, args.json);
     let accountId = args.accountId;
     const json = { response: 'dummy' };
     const metadata = args.metadata;
@@ -74,18 +85,11 @@ export class GoogleOIDCHandler extends JsonInteractionHandler implements JsonVie
     }
 
     if (func === 'makeUrl') {
-      const { code_verifier, code_challenge } = this.googleOIDC.createCode();
+      const { code_verifier, code_challenge, nonce } = await this.googleOIDC.createCodeAndNonce();
       this.gSessionStore.set(cookie,'code_verifier',code_verifier);
+      this.gSessionStore.set(cookie,'nonce',nonce);
       this.gSessionStore.set(cookie,'stage',stage);
-      //const redirect_url = args.target.path;
-      const params = {
-        scope: 'openid email profile',
-        code_challenge,
-        code_challenge_method: 'S256',
-        prompt: 'select_account',
-        //redirect_url
-      };
-      json.response = this.googleOIDC.myClient.authorizationUrl(params);
+      json.response = this.googleOIDC.createAuthUrl(redirectURL, code_challenge, nonce).href;
     } else if (func === 'getStage') {
       const stage = await this.gSessionStore.get(cookie,'stage');
       json.response = stage ?? 'undefined';

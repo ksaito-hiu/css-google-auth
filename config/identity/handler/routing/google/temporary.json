@@ -1,14 +1,14 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^2.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^8.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^3.0.0/components/context.jsonld"
   ],
   "@graph": [
     {
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:TemplateEngine" },
       "overrideParameters": {
-        "@type": "WaterfallHandler",
+        "@type": "StatusWaterfallHandler",
         "handlers": [
           {
             "@type": "EjsTemplateEngineTemporary",

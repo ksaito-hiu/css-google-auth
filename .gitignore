@@ -1,6 +1,6 @@
 data
 dist
 node_modules
-google-auth.json
+cga-config.json
 run.cga-test.sh
 

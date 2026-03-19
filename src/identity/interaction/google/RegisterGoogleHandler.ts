@@ -57,21 +57,15 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
 
   public async getView(args: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
     const { accountId, json, metadata } = args;
+    const { url } = await validateWithError(inSchema, json);
     const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
     if (!cookie) {
       throw new Error('RegisterGoogleHandler: no cookie.');
     }
-    const { code_verifier, code_challenge } = this.googleOIDC.createCode();
+    const { code_verifier, code_challenge, nonce } = await this.googleOIDC.createCodeAndNonce();
     this.gSessionStore.set(cookie,'code_verifier',code_verifier);
-    //const redirect_url = args.target;
-    const params = {
-      scope: 'openid email  profile',
-      code_challenge,
-      code_challenge_method: 'S256',
-      prompt: 'select_account',
-      //redirect_url
-    };
-    const goToUrl = this.googleOIDC.myClient.authorizationUrl(params);
+    this.gSessionStore.set(cookie,'nonce',nonce);
+    const goToUrl = this.googleOIDC.createAuthUrl(url,code_challenge,nonce).href;
     return { json: { ...parseSchema(inSchema), goToUrl }};
   }
 
@@ -87,15 +81,20 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
     }
     const code_verifier = await this.gSessionStore.get(cookie,'code_verifier');
     if (!code_verifier) {
-      throw new Error('GoogleLoginHandler: no data of code_verifier.');
+      throw new Error('RegisterGoogleHandler: no data of code_verifier.');
+    }
+    const nonce = await this.gSessionStore.get(cookie,'nonce');
+    if (!nonce) {
+      throw new Error('RegisterGoogleHandler: no data of nonce.');
     }
 
-    const queries = this.googleOIDC.myClient.callbackParams(url);
-    const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
+    const queries = '';
+    const tokenSet = await this.googleOIDC.getTokenSet(url,queries,code_verifier,nonce);
     await this.googleAuthFilter.check(tokenSet);
     const claims = tokenSet.claims();
-    const sub = claims.sub;
+    const sub = claims!.sub;
     this.gSessionStore.delete(cookie,'code_verifier');
+    this.gSessionStore.delete(cookie,'nonce');
 
     const accountId = await this.accountStore.create();
     const googleId = await this.googleStore.create(sub, accountId); // ダブリチェックあり

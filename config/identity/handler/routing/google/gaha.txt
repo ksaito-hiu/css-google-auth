@@ -1,0 +1,8 @@
+./register.json:      "@type": "WaterfallHandler",
+./login.json:      "@type": "WaterfallHandler",
+./create.json:      "@type": "WaterfallHandler",
+./resource.json:        "@type": "WaterfallHandler",
+./resource.json:      "@type": "WaterfallHandler",
+./google-oidc.json:      "@type": "WaterfallHandler",
+./temporary.json:        "@type": "StatusWaterfallHandler",
+./sub.json:      "@type": "WaterfallHandler",

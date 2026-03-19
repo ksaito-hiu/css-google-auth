@@ -47,11 +47,15 @@ export class SubGoogleHandler extends JsonInteractionHandler implements JsonView
     if (!code_verifier) {
       throw new Error('SubGoogleHandler: no data of code_verifier.');
     }
+    const nonce = await this.gSessionStore.get(cookie,'nonce');
+    if (!nonce) {
+      throw new Error('SubGoogleHandler: no data of nonce.');
+    }
 
-    const queries = this.googleOIDC.myClient.callbackParams(url);
-    const tokenSet = await this.googleOIDC.getTokenSet(queries,code_verifier);
+    const queries = '';
+    const tokenSet = await this.googleOIDC.getTokenSet(url,queries,code_verifier,nonce);
     const claims = tokenSet.claims();
-    const sub = claims.sub;
+    const sub = claims!.sub;
     this.gSessionStore.delete(cookie,'code_verifier');
 
     return { json: { sub } };

@@ -10,13 +10,13 @@ At first, setup OAuth 2.0 at Google API Console.
 * Documents of Google OpenID Connect: <https://developers.google.com/identity/openid-connect/openid-connect>
 
 The redirect uri should be `${Root of CommunitySolidServer}/.account/google/oidc/`.
-Then create a directory for your project. And create a file named `google-auth.json` in your project directory.
+Then create a directory for your project. And create a file named `cga-config.json` in your project directory.
 
 ```
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^2.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^8.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^3.0.0/components/context.jsonld",
   ],
   "import": [
     "cga:config/google-auth.json"
@@ -41,7 +41,7 @@ In your project directory, execute bellow commands.
 ```
 npm init -y
 npm install @solid/community-server css-google-auth openid-client
-npx community-solid-server -c @css:config/file.json google-auth.json -f data -m .
+npx community-solid-server -c @css:config/file.json cga-config.json -f data -m .
 ```
 
 The CommunitySolidServer will start at `http://localhost:3000/`.

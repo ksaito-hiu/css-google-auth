@@ -42,7 +42,8 @@
     } else {
       // それ以外は、ログイン前の状態と見なす
       const res = await postJson(controls.google.oidc,{func:'makeUrl',stage:'create'});
-      const { response } = await res.json();
+      const j = await res.json();
+      const { response } = j;
       document.querySelector('#google-button').addEventListener('click',(e)=>{
         window.location.href = response;
       });
