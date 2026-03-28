@@ -9,8 +9,6 @@ import type { LoginOutputType } from '@solid/community-server';
 import { ResolveLoginHandler } from '@solid/community-server';
 import { parseSchema, URL_SCHEMA, validateWithError } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
-import { DataFactory } from 'n3';
-import namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
 import { SOLID_HTTP } from '@solid/community-server';

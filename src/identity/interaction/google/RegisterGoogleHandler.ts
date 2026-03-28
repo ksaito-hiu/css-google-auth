@@ -10,8 +10,7 @@ import { ResolveLoginHandler } from '@solid/community-server';
 import { parseSchema, validateWithError } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
 import { SOLID_META } from '@solid/community-server';
-import { DataFactory } from 'n3';
-import namedNode = DataFactory.namedNode;
+import { NamedNode } from 'n3';
 import { GSessionStore } from './util/GSessionStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
 import { GoogleAuthFilter } from './GoogleAuthFilter';
@@ -57,7 +56,7 @@ export class RegisterGoogleHandler extends ResolveLoginHandler implements JsonVi
 
   public async getView(args: JsonInteractionHandlerInput): Promise<JsonRepresentation> {
     const { accountId, json, metadata } = args;
-    const cookie = metadata.get(namedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
+    const cookie = metadata.get(new NamedNode('urn:npm:solid:community-server:http:accountCookie'),SOLID_META.ResponseMetadata)?.value;
     if (!cookie) {
       throw new Error('RegisterGoogleHandler: no cookie.');
     }

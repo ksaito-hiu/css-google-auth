@@ -7,8 +7,6 @@ import type { JsonView } from '@solid/community-server';
 import { parseSchema, validateWithError } from '@solid/community-server';
 import { GoogleStore } from './util/GoogleStore';
 import { GoogleOIDC, CGA } from './GoogleOIDC';
-import { DataFactory } from 'n3';
-import namedNode = DataFactory.namedNode;
 import { GSessionStore } from './util/GSessionStore';
 import { CookieStore } from '@solid/community-server';
 import { v4 } from 'uuid';
