@@ -1,6 +1,6 @@
 {
   "name": "css-google-auth",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Components for Google authentication in CommunitySolidServer.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,7 +19,7 @@
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r cga",
     "build:ts": "tsc",
     "prepare": "npm run build",
-    "test": "community-solid-server -c @css:config/oidc.json test.json -f data -m .",
+    "test": "community-solid-server -c @css:config/oidc.json google-auth.json -f data -m .",
     "clean": "rm -fr node_modules; rm -fr data; rm -fr dist"
   },
   "files": [

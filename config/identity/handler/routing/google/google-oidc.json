@@ -43,8 +43,8 @@
       "@id": "urn:cga:core:GoogleOIDC",
       "@type": "GoogleOIDC",
       "callback_route": { "@id": "urn:cga:core:OIDCGoogleRoute" },
-      "client_id": "this parameter will be overrided by test.json.",
-      "client_secret": "this parameter will be overrided by test.json."
+      "client_id": "this parameter will be overrided by google-auth.json.",
+      "client_secret": "this parameter will be overrided by google-auth.json."
     },
     {
       "@id": "urn:solid-server:default:EarlyProcessParallelInitializer",
