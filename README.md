@@ -40,7 +40,7 @@ In your project directory, execute bellow commands.
 
 ```
 npm init -y
-npm install @solid/community-server css-google-auth openid-client
+npm install @solid/community-server css-google-auth openid-client@5
 npx community-solid-server -c @css:config/file.json google-auth.json -f data -m .
 ```
 
